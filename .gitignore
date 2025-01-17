@@ -1,0 +1,7 @@
+# Ignore build directory, external dependencies, and notes file
+/build/
+/external/
+/notes.txt
+
+# Ignore Visual Studio Code settings
+.vscode/

@@ -1,0 +1,8 @@
+build commands:
+
+rm -rf ./*
+cmake -DPICO_BOARD=pico_w ..
+make
+
+
+
