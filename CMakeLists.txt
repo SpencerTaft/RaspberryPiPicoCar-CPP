@@ -21,6 +21,10 @@ add_executable(hello_world
     helloWorld.cpp
 )
 
+# Enable USB output, disable UART output 
+pico_enable_stdio_usb(hello_world 1)
+pico_enable_stdio_uart(hello_world 0)
+
 # Add pico_stdlib library which aggregates commonly used features
 target_link_libraries(hello_world pico_stdlib)
 

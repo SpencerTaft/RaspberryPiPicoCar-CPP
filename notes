@@ -4,5 +4,7 @@ rm -rf ./*
 cmake -DPICO_BOARD=pico_w ..
 make
 
+in terminal:
+minicom -D /dev/ttyACM0 -b 115200
 
 
