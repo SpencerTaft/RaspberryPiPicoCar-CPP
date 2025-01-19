@@ -11,22 +11,24 @@ set(PICO_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/pico-sdk")
 include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 
-project(my_project)
+project(model_car_controller)
 
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
 
+add_subdirectory(hwControl)
+
 # rest of your project
-add_executable(hello_world
-    helloWorld.cpp
+add_executable(${PROJECT_NAME}
+    main.cpp
 )
 
 # Enable USB output, disable UART output 
-pico_enable_stdio_usb(hello_world 1)
-pico_enable_stdio_uart(hello_world 0)
+pico_enable_stdio_usb(${PROJECT_NAME} 1)
+pico_enable_stdio_uart(${PROJECT_NAME} 0)
 
 # Add pico_stdlib library which aggregates commonly used features
-target_link_libraries(hello_world pico_stdlib)
+target_link_libraries(${PROJECT_NAME} pico_stdlib scheduler)
 
 # create map/bin/hex/uf2 file in addition to ELF.
-pico_add_extra_outputs(hello_world)
+pico_add_extra_outputs(${PROJECT_NAME})
