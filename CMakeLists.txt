@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
 
-    # Define the path to the Pico SDK
+# Define the path to the Pico SDK
 set(PICO_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/pico-sdk")
 
-    # Add the Pico SDK to your project
+   # Add the Pico SDK to your project
 include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 
@@ -15,17 +15,21 @@ pico_sdk_init()
 add_subdirectory(hwControl)
 add_subdirectory(httpServer)
 
-# rest of your project
 add_executable(${PROJECT_NAME}
     main.cpp
 )
+
+link_directories(${CMAKE_SOURCE_DIR}/build)
+#include_directories(${CMAKE_SOURCE_DIR}/build)#might be optional
+include_directories(${CMAKE_SOURCE_DIR}/hwControl/runnables/include)#might be optional
+
 
 # Enable USB output, disable UART output 
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
 pico_enable_stdio_uart(${PROJECT_NAME} 0)
 
 # Add pico_stdlib library which aggregates commonly used features
-target_link_libraries(${PROJECT_NAME} pico_stdlib scheduler runnables httpServer)
+target_link_libraries(${PROJECT_NAME} pico_stdlib runnables ) #scheduler #httpServer
 
 # create map/bin/hex/uf2 file in addition to ELF.
 pico_add_extra_outputs(${PROJECT_NAME})

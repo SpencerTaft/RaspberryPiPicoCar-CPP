@@ -3,6 +3,12 @@
 LightRunnable::LightRunnable(std::string ID)
 {
     _runnableID = ID;
+    _runnableType = LIGHT;
+}
+
+RunnableType LightRunnable::getType()
+{
+    return _runnableType;
 }
 
 RuntimeExecutionStatus LightRunnable::runtime()
