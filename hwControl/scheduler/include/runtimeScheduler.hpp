@@ -1,3 +1,18 @@
 #pragma once
+#include <vector>
+#include "runnable.hpp"
 
-const int TEST = 1;
+class Scheduler
+{
+    public:
+        bool addRuntime(Runnable* newRunnable);
+        void startRuntime();
+        void stopRuntime();
+
+    private:
+        void runtimeScan();
+    
+        std::vector<Runnable*> _runnables;
+        bool _runtimeEnable;
+
+};
