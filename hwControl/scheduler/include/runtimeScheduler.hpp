@@ -5,8 +5,9 @@
 class Scheduler
 {
     public:
-        //static void addRuntime(Runnable* newRunnable);
+        static void addRuntime(Runnable* newRunnable);
         static void runtimeLoop();
+        
     private:    
-        //static std::vector<Runnable*> _runnables;
+        static std::vector<Runnable*> _runnables;
 };

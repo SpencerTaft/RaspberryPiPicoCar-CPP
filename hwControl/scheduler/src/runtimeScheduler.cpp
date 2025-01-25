@@ -3,10 +3,12 @@
 #include <iostream>
 #include "runnable.hpp"
 
-// void Scheduler::addRuntime(Runnable* newRunnable)
-// {
-//     Scheduler::_runnables.push_back(newRunnable);
-// }
+std::vector<Runnable*> Scheduler::_runnables;
+
+void Scheduler::addRuntime(Runnable* newRunnable)
+{
+    Scheduler::_runnables.push_back(newRunnable);
+}
 
 void Scheduler::runtimeLoop()
 {

@@ -15,8 +15,7 @@ int main() {
 
     LightRunnable runnable("left headlight");
 
-
-    //Scheduler::addRuntime(&runnable);
+    Scheduler::addRuntime(&runnable);
     
     multicore_launch_core1(Scheduler::runtimeLoop);
 
