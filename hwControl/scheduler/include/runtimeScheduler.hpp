@@ -10,9 +10,9 @@ class Scheduler
         void addRuntime(Runnable* newRunnable);
         void startRuntime();
         void stopRuntime();
-    private:
+    private:    
         void runtimeLoop();
-    
+
         std::vector<Runnable*> _runnables;
         std::atomic<bool> _runtimeEnable{false};
         std::thread _runtimeThread;

@@ -2,6 +2,7 @@
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include "runnable.hpp"
 
 void Scheduler::addRuntime(Runnable* newRunnable)
 {
@@ -13,7 +14,8 @@ void Scheduler::startRuntime()
     if (!_runtimeEnable)
     {
         _runtimeEnable = true;
-        _runtimeThread = std::thread(&Scheduler::runtimeLoop, this);
+        //_runtimeThread = std::thread(&Scheduler::runtimeLoop,this); //todo fix
+        runtimeLoop();
     }
 }
 
@@ -29,10 +31,6 @@ void Scheduler::stopRuntime()
 void Scheduler::runtimeLoop()
 {
     std::cout << "runtime loop started" << std::endl;
-    while (_runtimeEnable)
-    {
-        std::cout << "runtime scan" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(3));
-    }
+    //while (_runtimeEnable) //todo fix
     std::cout << "runtime loop stopped" << std::endl;
 }
