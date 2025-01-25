@@ -4,6 +4,9 @@
 #include "lightRunnable.hpp"
 #include "runtimeScheduler.hpp"
 
+#include "pico/multicore.h"
+#include "hardware/gpio.h"
+
 int main() {
     //setup_default_uart();
     stdio_init_all();
@@ -12,14 +15,15 @@ int main() {
 
     LightRunnable runnable("left headlight");
 
-    Scheduler scheduler;
 
-    scheduler.addRuntime(&runnable);
-    scheduler.startRuntime();
+    //Scheduler::addRuntime(&runnable);
+    
+    multicore_launch_core1(Scheduler::runtimeLoop);
+
 
     while(true)
     {
-        printf("Hello, world!\n");
+        printf("CORE 1!\n");
         sleep_ms(1000); //1s
     }
     

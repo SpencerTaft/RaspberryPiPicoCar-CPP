@@ -3,7 +3,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Define the path to the Pico SDK
-set(PICO_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/pico-sdk")
+set(PICO_SDK_PATH "${CMAKE_SOURCE_DIR}/external/pico-sdk")
 
    # Add the Pico SDK to your project
 include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
@@ -31,7 +31,7 @@ pico_enable_stdio_usb(${PROJECT_NAME} 1)
 pico_enable_stdio_uart(${PROJECT_NAME} 0)
 
 # Add pico_stdlib library which aggregates commonly used features
-target_link_libraries(${PROJECT_NAME} pico_stdlib runnables scheduler ) #httpServer
+target_link_libraries(${PROJECT_NAME} pico_stdlib runnables scheduler pico_multicore) #httpServer
 
 # create map/bin/hex/uf2 file in addition to ELF.
 pico_add_extra_outputs(${PROJECT_NAME})

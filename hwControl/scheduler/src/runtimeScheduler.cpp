@@ -1,36 +1,20 @@
 #include "runtimeScheduler.hpp"
-#include <thread>
-#include <chrono>
+#include "pico/stdlib.h"
 #include <iostream>
 #include "runnable.hpp"
 
-void Scheduler::addRuntime(Runnable* newRunnable)
-{
-    _runnables.push_back(newRunnable);
-}
-
-void Scheduler::startRuntime()
-{
-    if (!_runtimeEnable)
-    {
-        _runtimeEnable = true;
-        //_runtimeThread = std::thread(&Scheduler::runtimeLoop,this); //todo fix
-        runtimeLoop();
-    }
-}
-
-void Scheduler::stopRuntime()
-{
-    _runtimeEnable = false;
-    if (_runtimeThread.joinable())
-    {
-        _runtimeThread.join();
-    }
-}
+// void Scheduler::addRuntime(Runnable* newRunnable)
+// {
+//     Scheduler::_runnables.push_back(newRunnable);
+// }
 
 void Scheduler::runtimeLoop()
 {
     std::cout << "runtime loop started" << std::endl;
-    //while (_runtimeEnable) //todo fix
+    while(true)
+    {
+        std::cout << "core 2?" << std::endl;
+        sleep_ms(1000);
+    }
     std::cout << "runtime loop stopped" << std::endl;
 }
