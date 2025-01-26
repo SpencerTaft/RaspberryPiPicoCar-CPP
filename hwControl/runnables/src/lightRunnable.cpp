@@ -1,5 +1,6 @@
 #include "lightRunnable.hpp"
 #include "pico/stdlib.h"
+#include <nlohmann/json.hpp>
 #include <iostream>
 
 LightRunnable::LightRunnable(std::string ID)
@@ -37,20 +38,14 @@ std::string LightRunnable::getID()
     return _runnableID;
 }
 
-std::string LightRunnable::getConfig()
+bool LightRunnable::setConfig(nlohmann::json newConfig)
 {
-    return _currentConfig;
-}
-bool LightRunnable::setConfig(std::string newConfig)
-{
-    if (_currentConfig != newConfig)
-    {
-        //parse and update new config
-        _lightConfig.pin = 16;//todo temp
-        _lightConfig.isOn = true;//todo temp
-    }
-
-
+    nlohmann::json testObject;
+    testObject["pin"] = 16;//todo temp
+    //parse and update new config
+    
+    _lightConfig.pin = 16;//todo temp
+    _lightConfig.isOn = !_lightConfig.isOn;//todo temp
 }
 
 

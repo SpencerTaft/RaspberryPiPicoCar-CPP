@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Define the path to the Pico SDK
 set(PICO_SDK_PATH "${CMAKE_SOURCE_DIR}/external/pico-sdk")
 
-   # Add the Pico SDK to your project
+# Add the Pico SDK to your project
 include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 
@@ -16,6 +16,7 @@ pico_sdk_init()
 
 add_subdirectory(hwControl)
 add_subdirectory(httpServer)
+add_subdirectory(external)
 
 add_executable(${PROJECT_NAME}
     main.cpp

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <nlohmann/json.hpp>
 
 typedef enum RuntimeExecutionStatus {
     SUCCESS,
@@ -22,6 +23,5 @@ class Runnable
         virtual std::string getID() = 0;
         virtual RunnableType getType() = 0;
 
-        virtual std::string getConfig() = 0;
-        virtual bool setConfig(std::string newConfig) = 0;
+        virtual bool setConfig(nlohmann::json newConfig) = 0;
 };

@@ -1,7 +1,7 @@
 #include "runnable.hpp"
 
 typedef struct LightConfig {
-    uint8_t pin;
+    int pin;
     bool isOn;
 } LightConfig;
 
@@ -15,12 +15,11 @@ class LightRunnable : public Runnable {
         virtual std::string getID();
         virtual RunnableType getType();
 
-        virtual std::string getConfig();
-        virtual bool setConfig(std::string newConfig);
+        virtual bool setConfig(nlohmann::json newConfig);
     private:
         std::string _runnableID;
         RunnableType _runnableType;
-        std::string _currentConfig;
+        //nlohmann::json _currentConfigJSON;
         LightConfig _lightConfig;
 };
 
