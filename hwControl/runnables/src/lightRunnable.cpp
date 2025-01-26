@@ -21,6 +21,8 @@ RuntimeExecutionStatus LightRunnable::runtime()
 {
     std::cout << "LightRunnable runtime" << std::endl;
 
+    _lightConfig.isOn = !_lightConfig.isOn; //temporary toggling the pin
+
     if (_lightConfig.isOn)
     {
         gpio_put(_lightConfig.pin, 1);
@@ -40,12 +42,10 @@ std::string LightRunnable::getID()
 
 bool LightRunnable::setConfig(nlohmann::json newConfig)
 {
-    nlohmann::json testObject;
-    testObject["pin"] = 16;//todo temp
-    //parse and update new config
-    
-    _lightConfig.pin = 16;//todo temp
-    _lightConfig.isOn = !_lightConfig.isOn;//todo temp
+    _lightConfig.pin = newConfig["pin"];
+    _lightConfig.isOn = newConfig["isOn"];
+
+    return true;
 }
 
 

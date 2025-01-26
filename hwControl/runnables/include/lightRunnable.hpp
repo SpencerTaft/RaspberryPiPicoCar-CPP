@@ -19,7 +19,6 @@ class LightRunnable : public Runnable {
     private:
         std::string _runnableID;
         RunnableType _runnableType;
-        //nlohmann::json _currentConfigJSON;
         LightConfig _lightConfig;
 };
 
