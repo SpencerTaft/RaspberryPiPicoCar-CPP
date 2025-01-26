@@ -12,11 +12,12 @@ void Scheduler::addRuntime(Runnable* newRunnable)
 
 void Scheduler::runtimeLoop()
 {
-    std::cout << "runtime loop started" << std::endl;
     while(true)
     {
-        std::cout << "core 2?" << std::endl;
+        for (Runnable* runnable : Scheduler::_runnables)
+        {
+            runnable->runtime();
+        }
         sleep_ms(1000);
     }
-    std::cout << "runtime loop stopped" << std::endl;
 }

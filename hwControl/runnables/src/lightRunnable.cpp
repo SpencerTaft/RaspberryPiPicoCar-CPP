@@ -1,9 +1,14 @@
 #include "lightRunnable.hpp"
+#include "pico/stdlib.h"
+#include <iostream>
 
 LightRunnable::LightRunnable(std::string ID)
 {
     _runnableID = ID;
     _runnableType = LIGHT;
+
+    _lightConfig.pin = 16;//todo temp
+    _lightConfig.isOn = false;//todo temp
 }
 
 RunnableType LightRunnable::getType()
@@ -13,6 +18,17 @@ RunnableType LightRunnable::getType()
 
 RuntimeExecutionStatus LightRunnable::runtime()
 {
+    std::cout << "LightRunnable runtime" << std::endl;
+
+    if (_lightConfig.isOn)
+    {
+        gpio_put(_lightConfig.pin, 1);
+    }
+    else
+    {
+        gpio_put(_lightConfig.pin, 0);
+    }
+
     return RuntimeExecutionStatus::SUCCESS;
 }
 
@@ -27,7 +43,14 @@ std::string LightRunnable::getConfig()
 }
 bool LightRunnable::setConfig(std::string newConfig)
 {
-    _currentConfig = newConfig;
+    if (_currentConfig != newConfig)
+    {
+        //parse and update new config
+        _lightConfig.pin = 16;//todo temp
+        _lightConfig.isOn = true;//todo temp
+    }
+
+
 }
 
 

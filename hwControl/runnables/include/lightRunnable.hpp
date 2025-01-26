@@ -1,5 +1,10 @@
 #include "runnable.hpp"
 
+typedef struct LightConfig {
+    uint8_t pin;
+    bool isOn;
+} LightConfig;
+
 class LightRunnable : public Runnable {
     public:
         LightRunnable(std::string ID);
@@ -16,6 +21,7 @@ class LightRunnable : public Runnable {
         std::string _runnableID;
         RunnableType _runnableType;
         std::string _currentConfig;
+        LightConfig _lightConfig;
 };
 
 
