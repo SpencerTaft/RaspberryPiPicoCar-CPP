@@ -9,7 +9,7 @@
 
 int main() {
     //setup_default_uart();
-    stdio_init_all();
+    stdio_init_all(); //todo read about
 
     sleep_ms(10000); //10s
 
