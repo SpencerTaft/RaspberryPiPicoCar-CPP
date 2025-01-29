@@ -1,7 +1,8 @@
 build commands:
 
 rm -rf ./*
-cmake -DPICO_BOARD=pico_w ..
+#cmake -DPICO_BOARD=pico_w ..
+PICOHTTPS_WIFI_PASSWORD=yourpassword cmake -D"PICO_BOARD=pico_w" ..
 make
 
 in terminal:

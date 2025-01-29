@@ -22,6 +22,11 @@ add_executable(${PROJECT_NAME}
     main.cpp
 )
 
+target_compile_definitions(
+    httpServer
+    PRIVATE PICOHTTPS_WIFI_PASSWORD=\"$ENV{PICOHTTPS_WIFI_PASSWORD}\"
+)
+
 link_directories(${CMAKE_SOURCE_DIR}/build)
 include_directories(${CMAKE_SOURCE_DIR}/hwControl/runnables/include)
 include_directories(${CMAKE_SOURCE_DIR}/hwControl/scheduler/include)
