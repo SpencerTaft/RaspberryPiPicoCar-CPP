@@ -17,6 +17,7 @@ include_directories(
     ${PICO_SDK_PATH}/lib/lwip/src/include/ipv4
     ${PICO_SDK_PATH}/lib/lwip/src/include/ipv6
     ${PICO_SDK_PATH}/lib/lwip/src/include/arch
+    include_directories(/usr/include/mbedtls)
 )
 
 add_library(${PROJECT_NAME} STATIC httpServer.cpp)

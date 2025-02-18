@@ -127,13 +127,13 @@
 //  ALTCP is lwIP interface for TCP + X. In the case of the Pico HTTPS example,
 //  X should be TLS, as required for HTTPS.
 //
-#define LWIP_ALTCP                  1
+#define LWIP_ALTCP                  0 //not using ssl for MVP, to enable set to 1
 
 // Enable ALTCP-compatible TLS interface
 //
 //  i.e. Set X to TLS in ALTCP = TCP + X
 //
-#define LWIP_ALTCP_TLS              1
+#define LWIP_ALTCP_TLS              0 //not using ssl for MVP, to enable set to 1
 
 // Enable ALTCP-compatible TLS interface
 //
@@ -141,7 +141,7 @@
 //  full MbedTLS distribution__, but rather simply provides an lwIP compatible
 //  interface to Mbed TLS.
 //
-#define LWIP_ALTCP_TLS_MBEDTLS      1
+#define LWIP_ALTCP_TLS_MBEDTLS      0 //not using ssl for MVP, to enable set to 1
 
 
 
