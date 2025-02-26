@@ -17,7 +17,7 @@ include_directories(
     ${PICO_SDK_PATH}/lib/lwip/src/include/ipv4
     ${PICO_SDK_PATH}/lib/lwip/src/include/ipv6
     ${PICO_SDK_PATH}/lib/lwip/src/include/arch
-    include_directories(/usr/include/mbedtls)
+    ${PICO_SDK_PATH}/lib/lwip/src/include/lwip
 )
 
 add_library(${PROJECT_NAME} STATIC httpServer.cpp)
@@ -25,10 +25,12 @@ add_library(${PROJECT_NAME} STATIC httpServer.cpp)
 target_link_libraries(${PROJECT_NAME} pico_stdlib 
     nlohmann_json::nlohmann_json 
     pico_cyw43_arch_lwip_threadsafe_background
-    picow_tcpip_server_poll
-    pico_cyw43_arch_lwip_poll
-    lwip
-    mbedtls-dev
+    #picow_tcpip_server_poll
+    #pico_cyw43_arch_lwip_poll
+    #lwip
+    pico_lwip
+    #mbedtls
+    #mbedtls-dev
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
