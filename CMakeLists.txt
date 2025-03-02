@@ -33,6 +33,7 @@ target_compile_definitions(
 link_directories(${CMAKE_SOURCE_DIR}/build)
 include_directories(${CMAKE_SOURCE_DIR}/hwControl/runnables/include)
 include_directories(${CMAKE_SOURCE_DIR}/hwControl/scheduler/include)
+include_directories(${CMAKE_SOURCE_DIR}/httpServer/include)
 
 
 # Enable USB output, disable UART output 
