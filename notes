@@ -11,3 +11,6 @@ minicom -D /dev/ttyACM0 -b 115200
 connecting to pi hosted TCP server:
 http://10.0.0.104:4242 (subject to change)
 
+my python env:
+cd /home/spencer/DEV/cppProjects/picoWProjects/modelCarController/pyHTTPclient
+conda activate f1_analysis
