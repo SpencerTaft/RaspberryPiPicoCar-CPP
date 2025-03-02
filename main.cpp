@@ -3,6 +3,7 @@
 
 #include "lightRunnable.hpp"
 #include "runtimeScheduler.hpp"
+#include "httpServer.hpp"
 
 #include "pico/multicore.h"
 #include "hardware/gpio.h"
@@ -19,6 +20,9 @@ int main() {
     
     multicore_launch_core1(Scheduler::runtimeLoop);
 
+    sleep_ms(20000); //20s
+
+    testWifi();
 
     while(true)
     {
