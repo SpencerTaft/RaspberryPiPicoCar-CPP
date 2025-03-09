@@ -14,3 +14,5 @@ http://10.0.0.104:4242 (subject to change)
 my python env:
 cd /home/spencer/DEV/cppProjects/picoWProjects/modelCarController/pyHTTPclient
 conda activate f1_analysis
+
+curl -X POST http://10.0.0.104:4242 -d '{"left headlight": {"pin": "22", "isOn": "true"}}' -H "Content-Type: application/json"

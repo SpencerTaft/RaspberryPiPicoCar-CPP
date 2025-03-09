@@ -167,12 +167,6 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
     return ERR_OK;
 }
 
-static err_t tcp_server_poll(void *arg, struct tcp_pcb *tpcb) {
-    printf("TCP_SERVER_POLL\n");
-    printf("tcp_server_poll_fn\n");
-    return tcp_server_result(arg, -1); // no response is an error?
-}
-
 static void tcp_server_err(void *arg, err_t err) {
     printf("TCP_SERVER_ERR\n");
     if (err != ERR_ABRT) {
@@ -194,7 +188,6 @@ static err_t tcp_server_accept(void *arg, struct tcp_pcb *client_pcb, err_t err)
     tcp_arg(client_pcb, state);
     tcp_sent(client_pcb, tcp_server_sent);
     tcp_recv(client_pcb, tcp_server_recv);
-    tcp_poll(client_pcb, tcp_server_poll, POLL_TIME_S * 2);
     tcp_err(client_pcb, tcp_server_err);
 
     return ERR_OK; //tcp_server_send_data(arg, state->client_pcb);
