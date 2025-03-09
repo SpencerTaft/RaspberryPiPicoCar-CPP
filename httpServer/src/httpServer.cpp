@@ -29,7 +29,6 @@ typedef struct TCP_SERVER_T_ {
     uint8_t buffer_recv[BUF_SIZE];
     int sent_len;
     int recv_len;
-    int run_count;
 } TCP_SERVER_T;
 
 static err_t tcp_server_close(void *arg) {
@@ -56,17 +55,6 @@ static err_t tcp_server_close(void *arg) {
         state->server_pcb = NULL;
     }
     return err;
-}
-
-static err_t tcp_server_result(void *arg, int status) {
-    TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
-    if (status == 0) {
-        printf("test success\n");
-    } else {
-        printf("test failed %d\n", status);
-    }
-    state->complete = true;
-    return tcp_server_close(arg);
 }
 
 static err_t tcp_server_sent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
@@ -112,8 +100,8 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
     printf("TCP_SERVER_RECV\n");
     TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
     if (!p) {
-        printf("tcp_server_recv NOT P ERROR???\n"); //todo this is what is crashing in example
-        return tcp_server_result(arg, -1);
+        printf("TCP server received empty buffer\n");
+        return ERR_ABRT;
     }
     // this method is callback from lwIP, so cyw43_arch_lwip_begin is not required, however you
     // can use this method to cause an assertion in debug mode, if this method is called when
@@ -142,37 +130,20 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
     pbuf_free(p);
 
     // Have we have received the whole buffer
-    if (state->recv_len == BUF_SIZE) {
-
-        // check it matches
-        if (memcmp(state->buffer_sent, state->buffer_recv, BUF_SIZE) != 0) {
-            printf("buffer mismatch\n");
-            return tcp_server_result(arg, -1);
-        }
+    if (state->recv_len > 0) {
         printf("tcp_server_recv buffer ok\n");
-
-        // Test complete?
-        state->run_count++;
-        if (state->run_count >= TEST_ITERATIONS) {
-            tcp_server_result(arg, 0);
-            return ERR_OK;
-        }
-
-        // Send another buffer
-        //tcp_server_send_data(arg, state->client_pcb);
+        //todo send data to other core
     }
     else{
-        printf("DEBUG Waiting for more buffer from client\n");
+        printf("TCP server failed to receive data\n");
+        //todo do not return ERR_OK
     }
     return ERR_OK;
 }
 
 static void tcp_server_err(void *arg, err_t err) {
-    printf("TCP_SERVER_ERR\n");
-    if (err != ERR_ABRT) {
-        printf("tcp_client_err_fn %d\n", err);
-        tcp_server_result(arg, err);
-    }
+    printf("TCP server error, closing server %d\n", err);
+    tcp_server_close(arg);
 }
 
 static err_t tcp_server_accept(void *arg, struct tcp_pcb *client_pcb, err_t err) {
