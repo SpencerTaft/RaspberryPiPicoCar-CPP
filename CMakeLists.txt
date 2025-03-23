@@ -11,8 +11,8 @@ include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 project(model_car_controller)
 
 # Set the C++ standard
-#set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()

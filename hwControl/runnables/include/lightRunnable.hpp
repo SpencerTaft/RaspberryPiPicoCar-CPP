@@ -1,4 +1,5 @@
 #include "runnable.hpp"
+#include "pico/mutex.h"
 
 typedef struct LightConfig {
     int pin;
@@ -20,6 +21,7 @@ class LightRunnable : public Runnable {
         std::string _runnableID;
         RunnableType _runnableType;
         LightConfig _lightConfig;
+        mutex_t _configMutex;
 };
 
 

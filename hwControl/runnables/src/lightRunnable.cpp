@@ -10,6 +10,8 @@ LightRunnable::LightRunnable(std::string ID)
 
     _lightConfig.pin = 16;//todo temp
     _lightConfig.isOn = false;//todo temp
+
+    mutex_init(&_configMutex);
 }
 
 RunnableType LightRunnable::getType()
@@ -42,8 +44,10 @@ std::string LightRunnable::getID()
 
 bool LightRunnable::setConfig(nlohmann::json newConfig)
 {
+    mutex_enter_blocking(&_configMutex);
     _lightConfig.pin = newConfig["pin"];
     _lightConfig.isOn = newConfig["isOn"];
+    mutex_exit(&_configMutex);
 
     return true;
 }

@@ -6,6 +6,9 @@ include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 project(scheduler)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
 

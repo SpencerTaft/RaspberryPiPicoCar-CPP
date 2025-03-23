@@ -8,6 +8,9 @@ include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 project(httpServer)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 # Initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
 
