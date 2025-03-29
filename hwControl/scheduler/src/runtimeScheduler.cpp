@@ -1,6 +1,7 @@
 #include "runtimeScheduler.hpp"
 #include <pico/stdlib.h>
 #include <iostream>
+#include <cstring>
 #include "runnable.hpp"
 
 std::vector<Runnable*> Scheduler::_runnables;
@@ -25,7 +26,8 @@ int Scheduler::getRunnableIndex(char* runnableID)
 {
     for (int i = 0; i < Scheduler::_runnables.size(); i++)
     {
-        if (Scheduler::_runnables[i]->getID() == runnableID)
+        char* foundID = Scheduler::_runnables[i]->getID();
+        if (strcmp(foundID, runnableID) == 0)
         {
             return i;
         }

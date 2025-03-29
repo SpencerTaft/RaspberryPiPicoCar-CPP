@@ -106,17 +106,6 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
     if (p->tot_len > 0) {
         printf("tcp_server_recv %d/%d err %d\n", p->tot_len, state->recv_len, err);
 
-        ////>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        struct pbuf *current_pbuf = p;
-        while (current_pbuf != NULL) {
-            printf("received data:");
-            for (int i = 0; i < current_pbuf->len; i++) {
-                printf("%c", ((uint8_t *)current_pbuf->payload)[i]);
-            }
-            current_pbuf = current_pbuf->next;
-        }
-        ///<<<<<<<<<<<<<<<<<<<<<<<<<<
-
         // Receive the buffer
         const uint16_t buffer_left = BUF_SIZE - state->recv_len;
         state->recv_len += pbuf_copy_partial(p, state->buffer_recv + state->recv_len,
@@ -128,7 +117,9 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
     // Have we have received the whole buffer
     if (state->recv_len > 0) {
         printf("tcp_server_recv buffer ok\n");
-        //todo send data to other core
+        
+        //todo split data into ID and config
+        Scheduler::updateConfig("left headlight", (char*)state->buffer_recv);
     }
     else{
         printf("TCP server failed to receive data\n");

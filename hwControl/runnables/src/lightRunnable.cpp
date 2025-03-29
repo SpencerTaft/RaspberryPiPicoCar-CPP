@@ -46,6 +46,8 @@ char* LightRunnable::getID()
 bool LightRunnable::setConfig(char* newConfig)
 {
     mutex_enter_blocking(&_configMutex);
+    printf("RECEIVED CONFIG\n");
+    printf("%s\n", newConfig);
     // _lightConfig.pin = newConfig["pin"];
     // _lightConfig.isOn = newConfig["isOn"]; //todo
     mutex_exit(&_configMutex);
