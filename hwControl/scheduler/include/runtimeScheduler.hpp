@@ -7,11 +7,11 @@ class Scheduler
     public:
         static void addRuntime(Runnable* newRunnable);
         
-        static bool updateConfig(const std::string& runnableID, const nlohmann::json& newConfig);
+        static bool updateConfig(char* runnableID, char* newConfig);
         static void runtimeLoop();
         
     private:
-        static int getRunnableIndex(const std::string& runnableID);    
+        static int getRunnableIndex(char* runnableID);    
 
         static std::vector<Runnable*> _runnables;
 };

@@ -1,11 +1,12 @@
 #include "lightRunnable.hpp"
 #include <pico/stdlib.h>
-#include <nlohmann/json.hpp>
+#include <cstring>
+//#include <nlohmann/json.hpp>
 #include <iostream>
 
-LightRunnable::LightRunnable(std::string ID)
+LightRunnable::LightRunnable(char* ID)
 {
-    _runnableID = ID;
+    strcpy(_runnableID, ID);
     _runnableType = LIGHT;
 
     _lightConfig.pin = 16;//todo temp
@@ -37,16 +38,16 @@ RuntimeExecutionStatus LightRunnable::runtime()
     return RuntimeExecutionStatus::SUCCESS;
 }
 
-std::string LightRunnable::getID()
+char* LightRunnable::getID()
 {
-    return _runnableID;
+    return &_runnableID[0];
 }
 
-bool LightRunnable::setConfig(nlohmann::json newConfig)
+bool LightRunnable::setConfig(char* newConfig)
 {
     mutex_enter_blocking(&_configMutex);
-    _lightConfig.pin = newConfig["pin"];
-    _lightConfig.isOn = newConfig["isOn"];
+    // _lightConfig.pin = newConfig["pin"];
+    // _lightConfig.isOn = newConfig["isOn"]; //todo
     mutex_exit(&_configMutex);
 
     return true;

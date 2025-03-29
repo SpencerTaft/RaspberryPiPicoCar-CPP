@@ -10,7 +10,7 @@ void Scheduler::addRuntime(Runnable* newRunnable)
     Scheduler::_runnables.push_back(newRunnable);
 }
 
-bool Scheduler::updateConfig(const std::string& runnableID, const nlohmann::json& newConfig)
+bool Scheduler::updateConfig(char* runnableID, char* newConfig)
 {
     int runnableIndex = Scheduler::getRunnableIndex(runnableID);
     if ((runnableIndex == -1) || (Scheduler::_runnables.size() <= runnableIndex))
@@ -21,7 +21,7 @@ bool Scheduler::updateConfig(const std::string& runnableID, const nlohmann::json
     return Scheduler::_runnables[runnableIndex]->setConfig(newConfig);
 }
 
-int Scheduler::getRunnableIndex(const std::string& runnableID)
+int Scheduler::getRunnableIndex(char* runnableID)
 {
     for (int i = 0; i < Scheduler::_runnables.size(); i++)
     {

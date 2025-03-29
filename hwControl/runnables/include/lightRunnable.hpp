@@ -8,17 +8,17 @@ typedef struct LightConfig {
 
 class LightRunnable : public Runnable {
     public:
-        LightRunnable(std::string ID);
+        LightRunnable(char* ID);
         virtual ~LightRunnable(){}
 
         virtual RuntimeExecutionStatus runtime();
 
-        virtual std::string getID();
+        virtual char* getID();
         virtual RunnableType getType();
 
-        virtual bool setConfig(nlohmann::json newConfig);
+        virtual bool setConfig(char* newConfig);
     private:
-        std::string _runnableID;
+        char _runnableID[64]; //todo max length
         RunnableType _runnableType;
         LightConfig _lightConfig;
         mutex_t _configMutex;

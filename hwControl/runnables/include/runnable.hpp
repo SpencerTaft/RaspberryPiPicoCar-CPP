@@ -1,7 +1,5 @@
 #pragma once
-#include <pico/stdlib.h>
-#include <string>
-#include <nlohmann/json.hpp>
+//#include <nlohmann/json.hpp>
 
 typedef enum RuntimeExecutionStatus {
     SUCCESS,
@@ -21,8 +19,8 @@ class Runnable
         
         virtual RuntimeExecutionStatus runtime() = 0;
 
-        virtual std::string getID() = 0;
+        virtual char* getID() = 0;
         virtual RunnableType getType() = 0;
 
-        virtual bool setConfig(nlohmann::json newConfig) = 0;
+        virtual bool setConfig(char* newConfig) = 0;
 };

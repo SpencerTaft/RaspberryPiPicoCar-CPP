@@ -27,7 +27,7 @@ include_directories(
 add_library(${PROJECT_NAME} STATIC httpServer.cpp)
 
 target_link_libraries(${PROJECT_NAME} pico_stdlib 
-    nlohmann_json::nlohmann_json 
+    #nlohmann_json::nlohmann_json 
     pico_cyw43_arch_lwip_threadsafe_background
     pico_lwip
     scheduler
