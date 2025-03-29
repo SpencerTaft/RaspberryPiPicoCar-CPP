@@ -1,3 +1,6 @@
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 # Define the path to the Pico SDK
 set(PICO_SDK_PATH "${CMAKE_SOURCE_DIR}/external/pico-sdk")
 

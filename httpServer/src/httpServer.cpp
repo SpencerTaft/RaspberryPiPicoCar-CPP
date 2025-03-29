@@ -5,12 +5,8 @@
 //  *
 //  * SPDX-License-Identifier: BSD-3-Clause
 //  */
-
-#include <string.h>
-#include <stdlib.h>
-
-#include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
+#include "runtimeScheduler.hpp"
 
 #include "lwip/pbuf.h"
 #include "lwip/tcp.h"

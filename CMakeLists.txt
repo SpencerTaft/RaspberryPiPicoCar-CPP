@@ -8,6 +8,7 @@ set(PICO_SDK_PATH "${CMAKE_SOURCE_DIR}/external/pico-sdk")
 # Add the Pico SDK to your project
 include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
+
 project(model_car_controller)
 
 # initialize the Raspberry Pi Pico SDK

@@ -1,3 +1,6 @@
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 # Define the path to the Pico SDK
 set(PICO_SDK_PATH "${CMAKE_SOURCE_DIR}/external/pico-sdk")
 
@@ -5,9 +8,6 @@ set(PICO_SDK_PATH "${CMAKE_SOURCE_DIR}/external/pico-sdk")
 include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 project(scheduler)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
