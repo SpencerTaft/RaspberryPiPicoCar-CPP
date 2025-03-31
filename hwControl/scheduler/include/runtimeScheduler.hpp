@@ -7,7 +7,7 @@ class Scheduler
     public:
         static void addRuntime(Runnable* newRunnable);
         
-        static bool updateConfig(char* runnableID, char* newConfig);
+        static bool updateConfig(char* newConfig);
         static void runtimeLoop();
         
     private:

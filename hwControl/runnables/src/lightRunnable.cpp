@@ -46,8 +46,7 @@ char* LightRunnable::getID()
 bool LightRunnable::setConfig(char* newConfig)
 {
     mutex_enter_blocking(&_configMutex);
-    printf("RECEIVED CONFIG\n");
-    printf("%s\n", newConfig);
+    printf("RECEIVED CONFIG %s\n", newConfig);
 
     nlohmann::json configJSON = nlohmann::json::parse(newConfig);
 
@@ -62,7 +61,7 @@ bool LightRunnable::setConfig(char* newConfig)
     else
     {
         mutex_exit(&_configMutex);
-        printf("Invalid configuration received\n");
+        std::cout << "Invalid configuration received" << std::endl;
         return false;
     }
 }

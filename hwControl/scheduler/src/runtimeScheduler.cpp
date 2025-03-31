@@ -11,15 +11,51 @@ void Scheduler::addRuntime(Runnable* newRunnable)
     Scheduler::_runnables.push_back(newRunnable);
 }
 
-bool Scheduler::updateConfig(char* runnableID, char* newConfig)
+bool Scheduler::updateConfig(char* newConfig)
 {
-    int runnableIndex = Scheduler::getRunnableIndex(runnableID);
+    char* parsedRunnableID;
+    char* parsedConfig;
+
+    //Parse the runnableID and newConfig
+    printf("in Scheduler::updateConfig: %s\n", newConfig);
+    const char* delimiter = "~";
+    char* token = strtok(newConfig, delimiter);
+    int tokenIndex = 0;
+
+    if (token == nullptr)
+    {
+        printf("Tokens was null, debug\n");
+    }
+
+    
+    while(token != nullptr)
+    {
+        if(tokenIndex == 0)
+        {
+            parsedRunnableID = token;
+            printf("Parsed runnableID: %s\n", parsedRunnableID);
+        }
+        else if(tokenIndex == 1)
+        {
+            parsedConfig = token;
+            printf("Parsed Config: %s\n", parsedConfig);
+            break;
+        }
+        else{
+            printf("Invalid Config: %s\n", token);
+            return false;
+        }
+        token = strtok(nullptr, delimiter);
+        tokenIndex++;
+    }
+
+    int runnableIndex = Scheduler::getRunnableIndex(parsedRunnableID);
     if ((runnableIndex == -1) || (Scheduler::_runnables.size() <= runnableIndex))
     {
         return false;
     }
 
-    return Scheduler::_runnables[runnableIndex]->setConfig(newConfig);
+    return Scheduler::_runnables[runnableIndex]->setConfig(parsedConfig);
 }
 
 int Scheduler::getRunnableIndex(char* runnableID)

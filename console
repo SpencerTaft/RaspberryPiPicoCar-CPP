@@ -1,0 +1,23 @@
+LightRunnable runtime
+TCP_SERVER_ACCEPT
+Client connected
+TCP_SERVER_RECV
+tcp_server_recv 175/0 err 0
+tcp_server_recv buffer ok
+in Scheduler::updateConfig: POST / HTTP/1.1
+Host: 10.0.0.104:4242
+User-Agent: curl/8.5.0
+Accept: */*
+Content-Type: application/json
+Content-Length: 44
+
+left headlight~{"pin": "22", "isOn": "true"}
+Parsed runnableID: POST / HTTP/1.1
+Host: 10.0.0.104:4242
+User-Agent: curl/8.5.0
+Accept: */*
+Content-Type: application/json                                                  
+Content-Length: 44                                                              
+                                                                                
+left headlight                                                                  
+Parsed Config: {"pin": "22", "isOn": "true"}    

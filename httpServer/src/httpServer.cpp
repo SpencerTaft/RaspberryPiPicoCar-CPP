@@ -119,7 +119,7 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
         printf("tcp_server_recv buffer ok\n");
         
         //todo split data into ID and config
-        Scheduler::updateConfig("left headlight", (char*)state->buffer_recv);
+        Scheduler::updateConfig((char*)state->buffer_recv);
     }
     else{
         printf("TCP server failed to receive data\n");
