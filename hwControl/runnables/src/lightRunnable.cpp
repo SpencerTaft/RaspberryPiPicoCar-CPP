@@ -1,7 +1,7 @@
 #include "lightRunnable.hpp"
 #include <pico/stdlib.h>
 #include <cstring>
-//#include <nlohmann/json.hpp>
+#include <nlohmann/json.hpp>
 #include <iostream>
 
 LightRunnable::LightRunnable(char* ID)
@@ -48,11 +48,23 @@ bool LightRunnable::setConfig(char* newConfig)
     mutex_enter_blocking(&_configMutex);
     printf("RECEIVED CONFIG\n");
     printf("%s\n", newConfig);
-    // _lightConfig.pin = newConfig["pin"];
-    // _lightConfig.isOn = newConfig["isOn"]; //todo
-    mutex_exit(&_configMutex);
 
-    return true;
+    nlohmann::json configJSON = nlohmann::json::parse(newConfig);
+
+    if (configJSON.is_object() && configJSON.contains("pin") && configJSON.contains("isOn"))
+    {
+        _lightConfig.pin = configJSON["pin"];
+        _lightConfig.isOn = configJSON["isOn"];
+
+        mutex_exit(&_configMutex);
+        return true;
+    }
+    else
+    {
+        mutex_exit(&_configMutex);
+        printf("Invalid configuration received\n");
+        return false;
+    }
 }
 
 
