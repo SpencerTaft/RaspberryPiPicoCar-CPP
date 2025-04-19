@@ -11,7 +11,7 @@ HttpServer::~HttpServer()
 }
 
 err_t HttpServer::closeServer() {
-    printf("TCP_SERVER_CLOSE\n");
+    printf("fxn: closeServer\n");
     err_t err = ERR_OK;
     if (serverState.client_pcb != NULL) {
         tcp_arg(serverState.client_pcb, NULL);
@@ -36,7 +36,7 @@ err_t HttpServer::closeServer() {
 }
 
 err_t HttpServer::updateServerSent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
-    printf("TCP_SERVER_SENT\n");
+    printf("fxn: updateServerSent\n");
     TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
     printf("tcp_server_sent %u\n", len);
     state->sent_len += len;
@@ -52,7 +52,7 @@ err_t HttpServer::updateServerSent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
 }
 
 err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
-    printf("TCP_SERVER_RECV\n");
+    printf("fxn: receiveData\n");
     if (!p) {
         printf("TCP server received empty buffer\n");
         return ERR_ABRT;
@@ -76,8 +76,34 @@ err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
     if (serverState.recv_len > 0) {
         printf("tcp_server_recv buffer ok\n");
         
-        //todo split data into ID and config
-        Scheduler::updateConfig((char*)serverState.buffer_recv);
+////////////////////////?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+////////////////////////?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        //Parse the runnableID and newConfig
+        const char* delimiter = "\n";
+        char* token = strtok((char*)serverState.buffer_recv, delimiter);
+        char* parsedConfigItem; //currently only contains one config item
+        int tokenIndex = 0;
+
+        if (token == nullptr)printf("Tokens was null, debug\n");
+        
+        while(token != nullptr)
+        {
+            printf("TOKEN: %s\n", token);
+            printf("TOKEN index: %d\n", tokenIndex);
+            token = strtok(nullptr, delimiter);
+
+            if (tokenIndex == 6)
+            {
+                //Temporary solution, tokens 1-6 are http headers
+                parsedConfigItem = token;
+                printf("Parsed configItem: %s\n", parsedConfigItem);
+            }
+
+            tokenIndex++;
+        }
+///////////////////////<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+///////////////////////<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        Scheduler::updateConfig(parsedConfigItem);//(char*)serverState.buffer_recv);
     }
     else{
         printf("TCP server failed to receive data\n");
@@ -92,7 +118,7 @@ void HttpServer::serverError(void *arg, err_t err) {
 }
 
 err_t HttpServer::onConnectionAccept(void *arg, struct tcp_pcb *client_pcb, err_t err) {
-    printf("TCP_SERVER_ACCEPT\n");
+    printf("fxn: onAccept\n");
 
     serverState.client_pcb = client_pcb;
     //tcp_arg(client_pcb, state);
@@ -100,12 +126,12 @@ err_t HttpServer::onConnectionAccept(void *arg, struct tcp_pcb *client_pcb, err_
     tcp_recv(client_pcb, receiveData);
     tcp_err(client_pcb, serverError);
 
-    return ERR_OK; //tcp_server_send_data(arg, state->client_pcb);
+    return ERR_OK;
 }
 
 //this opens a TCP server on port 4242
 bool HttpServer::openServer() {
-    printf("TCP_SERVER_OPEN\n");
+    printf("fxn: openServer\n");
     printf("Starting server at %s on port %u\n", ip4addr_ntoa(netif_ip4_addr(netif_list)), TCP_PORT);
 
     //tcp_pcb (TCP protocol control block) manages state and control for a TCP connection
@@ -131,14 +157,13 @@ bool HttpServer::openServer() {
         return false;
     }
 
-    //tcp_arg(serverState.server_pcb); //state is arg to be passed to callbacks
     tcp_accept(serverState.server_pcb, onConnectionAccept); //sets function pointer to be called when a new connection is accepted
 
     return true;
 }
 
 void HttpServer::runServer(void) {
-    printf("RUN_TCP_SERVER\n");
+    printf("fxn: runServer\n");
 
     if (!openServer()) {
         printf("failed to open server\n");

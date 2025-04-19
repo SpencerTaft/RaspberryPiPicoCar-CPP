@@ -17,5 +17,5 @@ conda activate f1_analysis
 
 curl -X POST http://10.0.0.104:4242 -d '{"left headlight": {"pin": "22", "isOn": "true"}}' -H "Content-Type: application/json"
 
-
+//outdated below
 curl -X POST http://10.0.0.104:4242 -d 'left headlight~{"pin": "22", "isOn": "true"}' -H "Content-Type: application/json"
