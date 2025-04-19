@@ -22,17 +22,20 @@ typedef struct TCP_SERVER_T_ {
 class HttpServer {
     public:
         HttpServer() = default;
-        ~HttpServer() = default;
+        ~HttpServer();
+        void initAndRunServer(void);
 
-        static err_t closeServer(void *arg);
+    private:    
+        static err_t closeServer();
         static err_t updateServerSent(void *arg, struct tcp_pcb *tpcb, u16_t len);
         static err_t receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err);
-        //static err_t serverError(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err);
         static void serverError(void *arg, err_t err);
+        static err_t onConnectionAccept(void *arg, struct tcp_pcb *client_pcb, err_t err);   
+        static TCP_SERVER_T serverState;
 
-        //void serverError(void *arg, err_t err);
-        static err_t onConnectionAccept(void *arg, struct tcp_pcb *client_pcb, err_t err);        
-        bool openServer(TCP_SERVER_T* state);
+        bool openServer();
         void runServer(void);
-        void initAndRunServer(void);
+
+        
+        
 };

@@ -3,28 +3,34 @@
 #include "pico/cyw43_arch.h"
 #include "runtimeScheduler.hpp"
 
-err_t HttpServer::closeServer(void *arg) {
+TCP_SERVER_T HttpServer::serverState = {};
+
+HttpServer::~HttpServer()
+{
+    closeServer();
+}
+
+err_t HttpServer::closeServer() {
     printf("TCP_SERVER_CLOSE\n");
-    TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
     err_t err = ERR_OK;
-    if (state->client_pcb != NULL) {
-        tcp_arg(state->client_pcb, NULL);
-        tcp_poll(state->client_pcb, NULL, 0);
-        tcp_sent(state->client_pcb, NULL);
-        tcp_recv(state->client_pcb, NULL);
-        tcp_err(state->client_pcb, NULL);
-        err = tcp_close(state->client_pcb);
+    if (serverState.client_pcb != NULL) {
+        tcp_arg(serverState.client_pcb, NULL);
+        tcp_poll(serverState.client_pcb, NULL, 0);
+        tcp_sent(serverState.client_pcb, NULL);
+        tcp_recv(serverState.client_pcb, NULL);
+        tcp_err(serverState.client_pcb, NULL);
+        err = tcp_close(serverState.client_pcb);
         if (err != ERR_OK) {
             printf("close failed %d, calling abort\n", err);
-            tcp_abort(state->client_pcb);
+            tcp_abort(serverState.client_pcb);
             err = ERR_ABRT;
         }
-        state->client_pcb = NULL;
+        serverState.client_pcb = NULL;
     }
-    if (state->server_pcb) {
-        tcp_arg(state->server_pcb, NULL);
-        tcp_close(state->server_pcb);
-        state->server_pcb = NULL;
+    if (serverState.server_pcb) {
+        tcp_arg(serverState.server_pcb, NULL);
+        tcp_close(serverState.server_pcb);
+        serverState.server_pcb = NULL;
     }
     return err;
 }
@@ -45,10 +51,8 @@ err_t HttpServer::updateServerSent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
     return ERR_OK;
 }
 
-
 err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
     printf("TCP_SERVER_RECV\n");
-    TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
     if (!p) {
         printf("TCP server received empty buffer\n");
         return ERR_ABRT;
@@ -58,46 +62,40 @@ err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
     // cyw43_arch_lwip_begin IS needed
     cyw43_arch_lwip_check();
     if (p->tot_len > 0) {
-        printf("tcp_server_recv %d/%d err %d\n", p->tot_len, state->recv_len, err);
+        printf("tcp_server_recv %d/%d err %d\n", p->tot_len, serverState.recv_len, err);
 
         // Receive the buffer
-        const uint16_t buffer_left = BUF_SIZE - state->recv_len;
-        state->recv_len += pbuf_copy_partial(p, state->buffer_recv + state->recv_len,
+        const uint16_t buffer_left = BUF_SIZE - serverState.recv_len;
+        serverState.recv_len += pbuf_copy_partial(p, serverState.buffer_recv + serverState.recv_len,
                                              p->tot_len > buffer_left ? buffer_left : p->tot_len, 0);
         tcp_recved(tpcb, p->tot_len);
     }
     pbuf_free(p);
 
     // Have we have received the whole buffer
-    if (state->recv_len > 0) {
+    if (serverState.recv_len > 0) {
         printf("tcp_server_recv buffer ok\n");
         
         //todo split data into ID and config
-        Scheduler::updateConfig((char*)state->buffer_recv);
+        Scheduler::updateConfig((char*)serverState.buffer_recv);
     }
     else{
         printf("TCP server failed to receive data\n");
-        //todo do not return ERR_OK
+        return ERR_ABRT;
     }
     return ERR_OK;
 }
 
 void HttpServer::serverError(void *arg, err_t err) {
     printf("TCP server error, closing server %d\n", err);
-    closeServer(arg);
+    closeServer();
 }
 
 err_t HttpServer::onConnectionAccept(void *arg, struct tcp_pcb *client_pcb, err_t err) {
     printf("TCP_SERVER_ACCEPT\n");
-    TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
-    if (err != ERR_OK || client_pcb == NULL) {
-        printf("Failure in accept\n");
-        return ERR_VAL;
-    }
-    printf("Client connected\n");
 
-    state->client_pcb = client_pcb;
-    tcp_arg(client_pcb, state);
+    serverState.client_pcb = client_pcb;
+    //tcp_arg(client_pcb, state);
     tcp_sent(client_pcb, updateServerSent);
     tcp_recv(client_pcb, receiveData);
     tcp_err(client_pcb, serverError);
@@ -106,7 +104,7 @@ err_t HttpServer::onConnectionAccept(void *arg, struct tcp_pcb *client_pcb, err_
 }
 
 //this opens a TCP server on port 4242
-bool HttpServer::openServer(TCP_SERVER_T* state) {
+bool HttpServer::openServer() {
     printf("TCP_SERVER_OPEN\n");
     printf("Starting server at %s on port %u\n", ip4addr_ntoa(netif_ip4_addr(netif_list)), TCP_PORT);
 
@@ -124,8 +122,8 @@ bool HttpServer::openServer(TCP_SERVER_T* state) {
     }
 
     //assigning new pcb to the server state
-    state->server_pcb = tcp_listen_with_backlog(pcb, 1); //listen for incoming connections, allow 1 pending
-    if (!state->server_pcb) {
+    serverState.server_pcb = tcp_listen_with_backlog(pcb, 1); //listen for incoming connections, allow 1 pending
+    if (!serverState.server_pcb) {
         printf("failed to listen\n");
         if (pcb) {
             tcp_close(pcb);
@@ -133,29 +131,22 @@ bool HttpServer::openServer(TCP_SERVER_T* state) {
         return false;
     }
 
-    tcp_arg(state->server_pcb, state); //state is arg to be passed to callbacks
-    tcp_accept(state->server_pcb, onConnectionAccept); //sets function pointer to be called when a new connection is accepted
+    //tcp_arg(serverState.server_pcb); //state is arg to be passed to callbacks
+    tcp_accept(serverState.server_pcb, onConnectionAccept); //sets function pointer to be called when a new connection is accepted
 
     return true;
 }
 
 void HttpServer::runServer(void) {
     printf("RUN_TCP_SERVER\n");
-    TCP_SERVER_T *serverState = (TCP_SERVER_T *)calloc(1, sizeof(TCP_SERVER_T));
-    if (!serverState) {
-        printf("failed to allocate state\n");
-        return;
-    }
 
-    if (!openServer(serverState)) {
+    if (!openServer()) {
         printf("failed to open server\n");
-        free(serverState); //todo use a smart pointer for better memory management
         return;
     }
-    while(!serverState->complete) {
+    while(!serverState.complete) {
         sleep_ms(1000); //this can be blocking work that is being done
     }
-    free(serverState);
 }
 
 void HttpServer::initAndRunServer() {
