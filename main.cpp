@@ -22,7 +22,8 @@ int main() {
 
     sleep_ms(20000); //20s
 
-    testWifi();
+    HttpServer server;
+    server.initAndRunServer();
 
     while(true)
     {

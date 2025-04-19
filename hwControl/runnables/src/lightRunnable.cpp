@@ -22,18 +22,17 @@ RunnableType LightRunnable::getType()
 
 RuntimeExecutionStatus LightRunnable::runtime()
 {
+    mutex_enter_blocking(&_configMutex);
     std::cout << "LightRunnable runtime" << std::endl;
 
     _lightConfig.isOn = !_lightConfig.isOn; //temporary toggling the pin
 
-    if (_lightConfig.isOn)
-    {
-        gpio_put(_lightConfig.pin, 1);
-    }
-    else
-    {
-        gpio_put(_lightConfig.pin, 0);
-    }
+    gpio_init(16);
+    gpio_set_dir(16, GPIO_OUT);
+
+    setLightOutput();
+
+    mutex_exit(&_configMutex);
 
     return RuntimeExecutionStatus::SUCCESS;
 }
@@ -55,6 +54,11 @@ bool LightRunnable::setConfig(char* newConfig)
         _lightConfig.pin = configJSON["pin"];
         _lightConfig.isOn = configJSON["isOn"];
 
+        gpio_init(_lightConfig.pin);
+        gpio_set_dir(_lightConfig.pin, GPIO_OUT);
+
+        setLightOutput();
+
         mutex_exit(&_configMutex);
         return true;
     }
@@ -63,6 +67,18 @@ bool LightRunnable::setConfig(char* newConfig)
         mutex_exit(&_configMutex);
         std::cout << "Invalid configuration received" << std::endl;
         return false;
+    }
+}
+
+void LightRunnable::setLightOutput()
+{
+    if (_lightConfig.isOn)
+    {
+        gpio_put(_lightConfig.pin, 1);
+    }
+    else
+    {
+        gpio_put(_lightConfig.pin, 0);
     }
 }
 

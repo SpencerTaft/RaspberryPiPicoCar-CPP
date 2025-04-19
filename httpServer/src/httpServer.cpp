@@ -1,33 +1,9 @@
 #include "httpServer.hpp"
 
-// /**
-//  * Copyright (c) 2022 Raspberry Pi (Trading) Ltd.
-//  *
-//  * SPDX-License-Identifier: BSD-3-Clause
-//  */
 #include "pico/cyw43_arch.h"
 #include "runtimeScheduler.hpp"
 
-#include "lwip/pbuf.h"
-#include "lwip/tcp.h"
-
-#define TCP_PORT 4242
-#define DEBUG_printf printf
-#define BUF_SIZE 2048
-#define TEST_ITERATIONS 10
-#define POLL_TIME_S 5
-
-typedef struct TCP_SERVER_T_ {
-    struct tcp_pcb *server_pcb;
-    struct tcp_pcb *client_pcb;
-    bool complete;
-    uint8_t buffer_sent[BUF_SIZE];
-    uint8_t buffer_recv[BUF_SIZE];
-    int sent_len;
-    int recv_len;
-} TCP_SERVER_T;
-
-static err_t tcp_server_close(void *arg) {
+err_t HttpServer::closeServer(void *arg) {
     printf("TCP_SERVER_CLOSE\n");
     TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
     err_t err = ERR_OK;
@@ -53,7 +29,7 @@ static err_t tcp_server_close(void *arg) {
     return err;
 }
 
-static err_t tcp_server_sent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
+err_t HttpServer::updateServerSent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
     printf("TCP_SERVER_SENT\n");
     TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
     printf("tcp_server_sent %u\n", len);
@@ -69,30 +45,8 @@ static err_t tcp_server_sent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
     return ERR_OK;
 }
 
-//Omitted for now, until I can validate data received from client
-// err_t tcp_server_send_data(void *arg, struct tcp_pcb *tpcb)
-// {
-//     printf("TCP_SERVER_SEND_DATA\n");
-//     TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
-//     for(int i=0; i< BUF_SIZE; i++) {
-//         state->buffer_sent[i] = rand();
-//     }
 
-//     state->sent_len = 0;
-//     printf("Writing %ld bytes to client\n", BUF_SIZE);
-//     // this method is callback from lwIP, so cyw43_arch_lwip_begin is not required, however you
-//     // can use this method to cause an assertion in debug mode, if this method is called when
-//     // cyw43_arch_lwip_begin IS needed
-//     cyw43_arch_lwip_check();
-//     err_t err = tcp_write(tpcb, state->buffer_sent, BUF_SIZE, TCP_WRITE_FLAG_COPY);
-//     if (err != ERR_OK) {
-//         printf("Failed to write data %d\n", err);
-//         return tcp_server_result(arg, -1);
-//     }
-//     return ERR_OK;
-// }
-
-err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
+err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
     printf("TCP_SERVER_RECV\n");
     TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
     if (!p) {
@@ -128,12 +82,12 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
     return ERR_OK;
 }
 
-static void tcp_server_err(void *arg, err_t err) {
+void HttpServer::serverError(void *arg, err_t err) {
     printf("TCP server error, closing server %d\n", err);
-    tcp_server_close(arg);
+    closeServer(arg);
 }
 
-static err_t tcp_server_accept(void *arg, struct tcp_pcb *client_pcb, err_t err) {
+err_t HttpServer::onConnectionAccept(void *arg, struct tcp_pcb *client_pcb, err_t err) {
     printf("TCP_SERVER_ACCEPT\n");
     TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
     if (err != ERR_OK || client_pcb == NULL) {
@@ -144,15 +98,15 @@ static err_t tcp_server_accept(void *arg, struct tcp_pcb *client_pcb, err_t err)
 
     state->client_pcb = client_pcb;
     tcp_arg(client_pcb, state);
-    tcp_sent(client_pcb, tcp_server_sent);
-    tcp_recv(client_pcb, tcp_server_recv);
-    tcp_err(client_pcb, tcp_server_err);
+    tcp_sent(client_pcb, updateServerSent);
+    tcp_recv(client_pcb, receiveData);
+    tcp_err(client_pcb, serverError);
 
     return ERR_OK; //tcp_server_send_data(arg, state->client_pcb);
 }
 
 //this opens a TCP server on port 4242
-static bool tcp_server_open(TCP_SERVER_T* state) {
+bool HttpServer::openServer(TCP_SERVER_T* state) {
     printf("TCP_SERVER_OPEN\n");
     printf("Starting server at %s on port %u\n", ip4addr_ntoa(netif_ip4_addr(netif_list)), TCP_PORT);
 
@@ -180,12 +134,12 @@ static bool tcp_server_open(TCP_SERVER_T* state) {
     }
 
     tcp_arg(state->server_pcb, state); //state is arg to be passed to callbacks
-    tcp_accept(state->server_pcb, tcp_server_accept); //sets function pointer to be called when a new connection is accepted
+    tcp_accept(state->server_pcb, onConnectionAccept); //sets function pointer to be called when a new connection is accepted
 
     return true;
 }
 
-void run_tcp_server(void) {
+void HttpServer::runServer(void) {
     printf("RUN_TCP_SERVER\n");
     TCP_SERVER_T *serverState = (TCP_SERVER_T *)calloc(1, sizeof(TCP_SERVER_T));
     if (!serverState) {
@@ -193,7 +147,7 @@ void run_tcp_server(void) {
         return;
     }
 
-    if (!tcp_server_open(serverState)) {
+    if (!openServer(serverState)) {
         printf("failed to open server\n");
         free(serverState); //todo use a smart pointer for better memory management
         return;
@@ -204,7 +158,7 @@ void run_tcp_server(void) {
     free(serverState);
 }
 
-void testWifi() {
+void HttpServer::initAndRunServer() {
     if (cyw43_arch_init()) {
         printf("failed to initialise\n");
         return;
@@ -219,6 +173,6 @@ void testWifi() {
     } else {
         printf("Connected.\n");
     }
-    run_tcp_server();
+    runServer();
     cyw43_arch_deinit();
 }

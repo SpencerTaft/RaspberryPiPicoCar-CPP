@@ -22,6 +22,8 @@ class LightRunnable : public Runnable {
         RunnableType _runnableType;
         LightConfig _lightConfig;
         mutex_t _configMutex;
+
+        void setLightOutput();
 };
 
 
