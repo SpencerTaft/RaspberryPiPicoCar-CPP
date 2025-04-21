@@ -18,7 +18,11 @@ class LightRunnable : public Runnable {
 
         virtual bool setConfig(const char* newConfig);
     private:
-        char _runnableID[64]; //todo max length
+        constexpr static int MAX_RUNNABLE_ID_LEN = 64;
+        constexpr static int DEFAULT_LIGHT_PIN = 16;
+        constexpr static bool DEFAULT_LIGHT_STATE = false;
+
+        char _runnableID[MAX_RUNNABLE_ID_LEN];
         RunnableType _runnableType;
         LightConfig _lightConfig;
         mutex_t _configMutex;

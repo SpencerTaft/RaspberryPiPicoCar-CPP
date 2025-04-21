@@ -9,8 +9,8 @@ LightRunnable::LightRunnable(char* ID)
     strcpy(_runnableID, ID);
     _runnableType = LIGHT;
 
-    _lightConfig.pin = 16;//todo temp
-    _lightConfig.isOn = false;//todo temp
+    _lightConfig.pin = DEFAULT_LIGHT_PIN;
+    _lightConfig.isOn = DEFAULT_LIGHT_STATE;
 
     mutex_init(&_configMutex);
 }
@@ -24,9 +24,6 @@ RuntimeExecutionStatus LightRunnable::runtime()
 {
     mutex_enter_blocking(&_configMutex);
     std::cout << "LightRunnable runtime" << std::endl;
-
-    gpio_init(16);
-    gpio_set_dir(16, GPIO_OUT);
 
     setLightOutput();
 
@@ -42,8 +39,9 @@ char* LightRunnable::getID()
 
 bool LightRunnable::setConfig(const char* newConfig)
 {
+    bool setConfigSuccess = false;
+
     mutex_enter_blocking(&_configMutex);
-    printf("RECEIVED CONFIG %s\n", newConfig);
 
     nlohmann::json configJSON = nlohmann::json::parse(newConfig);
 
@@ -52,24 +50,23 @@ bool LightRunnable::setConfig(const char* newConfig)
         _lightConfig.pin = configJSON["pin"];
         _lightConfig.isOn = configJSON["isOn"];
 
-        gpio_init(_lightConfig.pin);
-        gpio_set_dir(_lightConfig.pin, GPIO_OUT);
-
         setLightOutput();
-
-        mutex_exit(&_configMutex);
-        return true;
+        setConfigSuccess = true;
     }
     else
     {
-        mutex_exit(&_configMutex);
-        std::cout << "Invalid configuration received" << std::endl;
-        return false;
+        printf("Invalid configuration received");
     }
+
+    mutex_exit(&_configMutex);
+    return setConfigSuccess;
 }
 
 void LightRunnable::setLightOutput()
 {
+    gpio_init(_lightConfig.pin);
+    gpio_set_dir(_lightConfig.pin, GPIO_OUT);
+
     if (_lightConfig.isOn)
     {
         gpio_put(_lightConfig.pin, 1);

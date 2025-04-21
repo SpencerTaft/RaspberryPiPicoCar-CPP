@@ -14,45 +14,38 @@ void Scheduler::addRuntime(Runnable* newRunnable)
 
 bool Scheduler::updateConfig(char* newConfig)
 {
-    printf("in Scheduler::updateConfig: %s\n", newConfig); //{"left headlight": {"pin": "22", "isOn": "true"}}
+    bool updateConfigSuccess = true;
 
     nlohmann::json parsedConfig = nlohmann::json::parse(newConfig);
-    printf("Parsed config: %s\n", parsedConfig.dump().c_str());
 
-    //Read first config object for MVP
+    //MVP only expects one config item named config1, but this can be adjusted to take an array of configs in the future
     if (parsedConfig.is_object() && parsedConfig.contains("config1"))
     {
-        printf("Parsed config contains ID\n");
-        nlohmann::json firstConfig = parsedConfig["config1"];//nlohmann::json::parse(newConfig);
+        nlohmann::json firstConfig = parsedConfig["config1"];
 
-            if (firstConfig.is_object() && firstConfig.contains("ID"))
+        if (firstConfig.is_object() && firstConfig.contains("ID"))
         {
             int runnableIndex = getRunnableIndex((char*)firstConfig["ID"].get<std::string>().c_str()); //todo see if c++strings link here
+            if (runnableIndex == -1)
+            {
+                printf("Runnable with ID %s not found\n", firstConfig["ID"].get<std::string>().c_str());
+                updateConfigSuccess = false;
+            }
 
             if (!Scheduler::_runnables[runnableIndex]->setConfig(firstConfig.dump().c_str()))
             {
                 printf("Failed to set config for runnable %s\n", firstConfig["ID"].get<std::string>().c_str());
-                return false;
+                updateConfigSuccess = false;
             }
+        }
     }
-    
-    return true; //todo temp solution
-}
-    
+    else
+    {
+        printf("Invalid configuration received");
+        updateConfigSuccess = false;
+    }
 
-
-
-
-
-//////////////-------------------------////// todo update this to use "newConfig"
-    // int runnableIndex = Scheduler::getRunnableIndex(parsedRunnableID);
-    // if ((runnableIndex == -1) || (Scheduler::_runnables.size() <= runnableIndex))
-    // {
-    //     return false;
-    // }
-
-    // return Scheduler::_runnables[runnableIndex]->setConfig(parsedConfig);
-    return true;
+    return updateConfigSuccess;
 }
 
 int Scheduler::getRunnableIndex(char* runnableID)
@@ -76,7 +69,7 @@ void Scheduler::runtimeLoop()
         {
             runnable->runtime();
         }
-        sleep_ms(50000);
+        sleep_ms(RUNTIME_PERIOD_MS);
     }
 }
 

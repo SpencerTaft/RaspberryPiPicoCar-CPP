@@ -11,6 +11,8 @@ class Scheduler
         static void runtimeLoop();
         
     private:
+        constexpr static int RUNTIME_PERIOD_MS = 50000;
+
         static int getRunnableIndex(char* runnableID);    
 
         static std::vector<Runnable*> _runnables;

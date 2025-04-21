@@ -99,17 +99,16 @@ err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
         }
 
         Scheduler::updateConfig(parsedConfigItem);//(char*)serverState.buffer_recv);
-
         ////////////>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         printf ("DID NOT CRASH BEFORE SEND\n");
         // Send an HTTP response
-        const char *response =
+        const char *successResponse =
             "HTTP/1.1 200 OK\r\n"
             "Content-Type: text/plain\r\n"
             "Content-Length: 13\r\n"
             "\r\n"
-            "Hello, World!";
-        tcp_write(tpcb, response, strlen(response), TCP_WRITE_FLAG_COPY);
+            "Successful Set\r\n";
+        tcp_write(tpcb, successResponse, strlen(successResponse), TCP_WRITE_FLAG_COPY);
         tcp_output(tpcb);
         ////////////////<<<<<<<<<<<<<<<<<<<<<<<<<<
     }
