@@ -76,8 +76,6 @@ err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
     if (serverState.recv_len > 0) {
         printf("tcp_server_recv buffer ok\n");
         
-////////////////////////?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-////////////////////////?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         //Parse the runnableID and newConfig
         const char* delimiter = "\n";
         char* token = strtok((char*)serverState.buffer_recv, delimiter);
@@ -88,22 +86,32 @@ err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
         
         while(token != nullptr)
         {
-            printf("TOKEN: %s\n", token);
-            printf("TOKEN index: %d\n", tokenIndex);
             token = strtok(nullptr, delimiter);
 
             if (tokenIndex == 6)
             {
-                //Temporary solution, tokens 1-6 are http headers
+                //tokens 1-5 are http headers
                 parsedConfigItem = token;
                 printf("Parsed configItem: %s\n", parsedConfigItem);
             }
 
             tokenIndex++;
         }
-///////////////////////<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-///////////////////////<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
         Scheduler::updateConfig(parsedConfigItem);//(char*)serverState.buffer_recv);
+
+        ////////////>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        printf ("DID NOT CRASH BEFORE SEND\n");
+        // Send an HTTP response
+        const char *response =
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Type: text/plain\r\n"
+            "Content-Length: 13\r\n"
+            "\r\n"
+            "Hello, World!";
+        tcp_write(tpcb, response, strlen(response), TCP_WRITE_FLAG_COPY);
+        tcp_output(tpcb);
+        ////////////////<<<<<<<<<<<<<<<<<<<<<<<<<<
     }
     else{
         printf("TCP server failed to receive data\n");
