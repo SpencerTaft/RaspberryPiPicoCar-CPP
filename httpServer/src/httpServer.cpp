@@ -98,9 +98,9 @@ err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
             tokenIndex++;
         }
 
-        Scheduler::updateConfig(parsedConfigItem);//(char*)serverState.buffer_recv);
+        Scheduler::updateConfig(parsedConfigItem);
         ////////////>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        printf ("DID NOT CRASH BEFORE SEND\n");
+        //todo put in its own function, and create failure response
         // Send an HTTP response
         const char *successResponse =
             "HTTP/1.1 200 OK\r\n"
@@ -110,6 +110,10 @@ err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
             "Successful Set\r\n";
         tcp_write(tpcb, successResponse, strlen(successResponse), TCP_WRITE_FLAG_COPY);
         tcp_output(tpcb);
+
+        serverState.recv_len = 0;
+        serverState.sent_len = 0;
+
         ////////////////<<<<<<<<<<<<<<<<<<<<<<<<<<
     }
     else{
@@ -176,7 +180,7 @@ void HttpServer::runServer(void) {
         printf("failed to open server\n");
         return;
     }
-    while(!serverState.complete) {
+    while(!serverState.killServer) {
         sleep_ms(1000); //this can be blocking work that is being done
     }
 }
