@@ -21,5 +21,5 @@ class Runnable
         virtual char* getID() = 0;
         virtual RunnableType getType() = 0;
 
-        virtual bool setConfig(char* newConfig) = 0;
+        virtual bool setConfig(const char* newConfig) = 0;
 };

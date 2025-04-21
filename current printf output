@@ -1,27 +1,28 @@
-Connecting to Wi-Fi...
-Connected.
-fxn: runServer
-fxn: openServer
 Starting server at 10.0.0.104 on port 4242
+LightRunnable runtime
 fxn: onAccept
 fxn: receiveData
-tcp_server_recv 175/0 err 0
+tcp_server_recv 198/0 err 0
 tcp_server_recv buffer ok
-in Scheduler::updateConfig: POST / HTTP/1.1
-Host: 10.0.0.104:4242
-User-Agent: curl/8.5.0
-Accept: */*
-Content-Type: application/json
-Content-Length: 44
-
-left headlight~{"pin": "22", "isOn": "true"}
-Parsed runnableID: POST / HTTP/1.1
-Host: 10.0.0.104:4242
-User-Agent: curl/8.5.0
-Accept: */*
-Content-Type: application/json
-Content-Length: 44
-
-left headlight
-Parsed Config: {"pin": "22", "isOn": "true"}
+TOKEN: POST / HTTP/1.1
+TOKEN index: 0
+TOKEN: Host: 10.0.0.104:4242
+TOKEN index: 1
+TOKEN: User-Agent: curl/8.5.0
+TOKEN index: 2
+TOKEN: Accept: */*
+TOKEN index: 3
+TOKEN: Content-Type: application/json
+TOKEN index: 4
+TOKEN: Content-Length: 67
+TOKEN index: 5
+TOKEN: 
+TOKEN index: 6
+Parsed configItem: {"config1": {"ID": "left headlight", "pin": "22", "isOn": "false"}}
+TOKEN: {"config1": {"ID": "left headlight", "pin": "22", "isOn": "false"}}
+TOKEN index: 7
+in Scheduler::updateConfig: {"config1": {"ID": "left headlight", "pin": "22", "isOn": "false"}}
+Parsed config: {"config1":{"ID":"left headlight","isOn":"false","pin":"22"}}
+Parsed config contains ID
+RECEIVED CONFIG {"ID":"left headlight","isOn":"false","pin":"22"}
 

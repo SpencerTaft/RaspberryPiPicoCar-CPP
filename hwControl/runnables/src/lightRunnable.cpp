@@ -25,8 +25,6 @@ RuntimeExecutionStatus LightRunnable::runtime()
     mutex_enter_blocking(&_configMutex);
     std::cout << "LightRunnable runtime" << std::endl;
 
-    _lightConfig.isOn = !_lightConfig.isOn; //temporary toggling the pin
-
     gpio_init(16);
     gpio_set_dir(16, GPIO_OUT);
 
@@ -42,7 +40,7 @@ char* LightRunnable::getID()
     return &_runnableID[0];
 }
 
-bool LightRunnable::setConfig(char* newConfig)
+bool LightRunnable::setConfig(const char* newConfig)
 {
     mutex_enter_blocking(&_configMutex);
     printf("RECEIVED CONFIG %s\n", newConfig);

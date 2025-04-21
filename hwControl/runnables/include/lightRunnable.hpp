@@ -16,7 +16,7 @@ class LightRunnable : public Runnable {
         virtual char* getID();
         virtual RunnableType getType();
 
-        virtual bool setConfig(char* newConfig);
+        virtual bool setConfig(const char* newConfig);
     private:
         char _runnableID[64]; //todo max length
         RunnableType _runnableType;

@@ -19,6 +19,6 @@ include_directories(
 
 add_library(${PROJECT_NAME} STATIC runtimeScheduler.cpp)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC runnables pico_stdlib)
+target_link_libraries(${PROJECT_NAME} PUBLIC runnables pico_stdlib nlohmann_json::nlohmann_json)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build )
