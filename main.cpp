@@ -12,15 +12,17 @@ int main() {
     //setup_default_uart();
     stdio_init_all(); //todo read about
 
-    sleep_ms(10000); //10s
+    sleep_ms(1000); //10s
 
-    LightRunnable runnable("left headlight");
+    LightRunnable leftHeadlightRunnable("left headlight");
+    LightRunnable rightHeadlightRunnable("right headlight");
 
-    Scheduler::addRuntime(&runnable);
-    
+    Scheduler::addRuntime(&leftHeadlightRunnable);
+    Scheduler::addRuntime(&rightHeadlightRunnable);
+
     multicore_launch_core1(Scheduler::runtimeLoop);
 
-    sleep_ms(20000); //20s
+    sleep_ms(2000); //2s
 
     HttpServer server;
     server.initAndRunServer();

@@ -99,9 +99,8 @@ err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
         }
 
         Scheduler::updateConfig(parsedConfigItem);
-        ////////////>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        //todo put in its own function, and create failure response
-        // Send an HTTP response
+
+        //todo post-MVP, put this in its own function, with conditional response
         const char *successResponse =
             "HTTP/1.1 200 OK\r\n"
             "Content-Type: text/plain\r\n"
@@ -113,8 +112,6 @@ err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
 
         serverState.recv_len = 0;
         serverState.sent_len = 0;
-
-        ////////////////<<<<<<<<<<<<<<<<<<<<<<<<<<
     }
     else{
         printf("TCP server failed to receive data\n");
