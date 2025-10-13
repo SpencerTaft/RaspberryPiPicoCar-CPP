@@ -17,7 +17,7 @@ pico_sdk_init()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
-add_library(${PROJECT_NAME} STATIC lightRunnable.cpp)
+add_library(${PROJECT_NAME} STATIC lightRunnable.cpp pwmLightRunnable.cpp)
 
 target_link_libraries(${PROJECT_NAME} pico_stdlib nlohmann_json::nlohmann_json)
 

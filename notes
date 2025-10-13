@@ -15,12 +15,12 @@ my python env:
 cd /home/spencer/DEV/cppProjects/picoWProjects/modelCarController/pyHTTPclient
 conda activate f1_analysis
 
-//current turn on light
-curl -X POST http://10.0.0.104:4242 -d '{"config1": {"ID": "left headlight", "pin": 14, "isOn": true}}' -H "Content-Type: application/json"
+//current turn on left light
+curl -X POST http://10.0.0.103:4242 -d '{"config1": {"ID": "left headlight", "pin": 14, "isOn": true}}' -H "Content-Type: application/json"
 //current turn off light
-curl -X POST http://10.0.0.104:4242 -d '{"config1": {"ID": "left headlight", "pin": 14, "isOn": false}}' -H "Content-Type: application/json"
+curl -X POST http://10.0.0.103:4242 -d '{"config1": {"ID": "left headlight", "pin": 14, "isOn": false}}' -H "Content-Type: application/json"
 
-//current turn on light
+//current turn on right light
 curl -X POST http://10.0.0.104:4242 -d '{"config1": {"ID": "right headlight", "pin": 15, "isOn": true}}' -H "Content-Type: application/json"
 //current turn off light
 curl -X POST http://10.0.0.104:4242 -d '{"config1": {"ID": "left headlight", "pin": 15, "isOn": false}}' -H "Content-Type: application/json"

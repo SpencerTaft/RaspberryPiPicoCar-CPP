@@ -1,15 +1,15 @@
 #include "runnable.hpp"
 #include "pico/mutex.h"
 
-typedef struct LightConfig {
+typedef struct PWMLightConfig {
     int pin;
-    bool isOn;
-} LightConfig;
+    bool isOn; //todo
+} PWMLightConfig;
 
-class LightRunnable : public Runnable {
+class PWMLightRunnable : public Runnable {
     public:
-        LightRunnable(char* ID);
-        virtual ~LightRunnable(){}
+        PWMLightRunnable(char* ID);
+        virtual ~PWMLightRunnable(){}
 
         virtual RuntimeExecutionStatus runtime();
 
@@ -24,7 +24,7 @@ class LightRunnable : public Runnable {
 
         char _runnableID[MAX_RUNNABLE_ID_LEN];
         RunnableType _runnableType;
-        LightConfig _lightConfig;
+        PWMLightConfig _lightConfig;
         mutex_t _configMutex;
 
         void setLightOutput();
