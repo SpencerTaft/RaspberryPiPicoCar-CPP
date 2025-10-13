@@ -9,8 +9,11 @@ PWMLightRunnable::PWMLightRunnable(char* ID)
     strcpy(_runnableID, ID);
     _runnableType = PWMLIGHT;
 
-    _lightConfig.pin = DEFAULT_LIGHT_PIN;
-    _lightConfig.isOn = DEFAULT_LIGHT_STATE;
+    _pwmLightConfig.pin = DEFAULT_PWM_LIGHT_PIN;
+    _pwmLightConfig.isOn = DEFAULT_PWM_LIGHT_STATE;
+    _pwmLightConfig.isRamp = DEFAULT_PWM_LIGHT_RAMP;
+    _pwmLightConfig.LMax = DEFAULT_PWM_LIGHT_LMAX;
+    _pwmLightConfig.rampUpTimeMs = DEFAULT_PWM_LIGHT_RAMPUPTIME_MS;
 
     mutex_init(&_configMutex);
 }
@@ -47,8 +50,8 @@ bool PWMLightRunnable::setConfig(const char* newConfig)
 
     if (configJSON.is_object() && configJSON.contains("pin") && configJSON.contains("isOn"))
     {
-        _lightConfig.pin = configJSON["pin"];
-        _lightConfig.isOn = configJSON["isOn"];
+        _pwmLightConfig.pin = configJSON["pin"];
+        _pwmLightConfig.isOn = configJSON["isOn"];
 
         setLightOutput();
         setConfigSuccess = true;
@@ -64,16 +67,16 @@ bool PWMLightRunnable::setConfig(const char* newConfig)
 
 void PWMLightRunnable::setLightOutput()
 {
-    gpio_init(_lightConfig.pin);
-    gpio_set_dir(_lightConfig.pin, GPIO_OUT);
+    gpio_init(_pwmLightConfig.pin);
+    gpio_set_dir(_pwmLightConfig.pin, GPIO_OUT);
 
-    if (_lightConfig.isOn)
+    if (_pwmLightConfig.isOn)
     {
-        gpio_put(_lightConfig.pin, 1);
+        gpio_put(_pwmLightConfig.pin, 1);
     }
     else
     {
-        gpio_put(_lightConfig.pin, 0);
+        gpio_put(_pwmLightConfig.pin, 0);
     }
 }
 
