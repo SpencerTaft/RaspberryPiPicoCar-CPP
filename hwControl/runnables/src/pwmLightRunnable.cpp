@@ -4,13 +4,13 @@
 #include <nlohmann/json.hpp>
 #include <iostream>
 
-PWMLightRunnable::PWMLightRunnable(char* ID)
+//TODO NEXT TIME combine with lightRunnable.cpp, inheritance, use lightConfig for the basic stuff
+
+PWMLightRunnable::PWMLightRunnable(char* ID) : LightRunnable(ID)
 {
     strcpy(_runnableID, ID);
     _runnableType = PWMLIGHT;
 
-    _pwmLightConfig.pin = DEFAULT_PWM_LIGHT_PIN;
-    _pwmLightConfig.isOn = DEFAULT_PWM_LIGHT_STATE;
     _pwmLightConfig.isRamp = DEFAULT_PWM_LIGHT_RAMP;
     _pwmLightConfig.LMax = DEFAULT_PWM_LIGHT_LMAX;
     _pwmLightConfig.rampUpTimeMs = DEFAULT_PWM_LIGHT_RAMPUPTIME_MS;
@@ -48,12 +48,15 @@ bool PWMLightRunnable::setConfig(const char* newConfig)
 
     nlohmann::json configJSON = nlohmann::json::parse(newConfig);
 
-    if (configJSON.is_object() && configJSON.contains("pin") && configJSON.contains("isOn"))
+    if (configJSON.is_object() && configJSON.contains("pin") && configJSON.contains("isOn")) //todo update one value at a time
     {
-        _pwmLightConfig.pin = configJSON["pin"];
-        _pwmLightConfig.isOn = configJSON["isOn"];
+        _lightConfig.pin = configJSON["pin"];
+        _lightConfig.isOn = configJSON["isOn"];
+        _pwmLightConfig.isRamp = configJSON["isRamp"];
+        _pwmLightConfig.LMax = configJSON["LMax"];
+        _pwmLightConfig.rampUpTimeMs = configJSON["rampUpTimeMs"];
 
-        setLightOutput();
+        //setLightOutput();//todo rem
         setConfigSuccess = true;
     }
     else
@@ -65,20 +68,6 @@ bool PWMLightRunnable::setConfig(const char* newConfig)
     return setConfigSuccess;
 }
 
-void PWMLightRunnable::setLightOutput()
-{
-    gpio_init(_pwmLightConfig.pin);
-    gpio_set_dir(_pwmLightConfig.pin, GPIO_OUT);
-
-    if (_pwmLightConfig.isOn)
-    {
-        gpio_put(_pwmLightConfig.pin, 1);
-    }
-    else
-    {
-        gpio_put(_pwmLightConfig.pin, 0);
-    }
-}
 
 
 

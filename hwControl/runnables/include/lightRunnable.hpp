@@ -1,3 +1,4 @@
+#pragma once
 #include "runnable.hpp"
 #include "pico/mutex.h"
 
@@ -17,7 +18,7 @@ class LightRunnable : public Runnable {
         virtual RunnableType getType();
 
         virtual bool setConfig(const char* newConfig);
-    private:
+    protected:
         constexpr static int MAX_RUNNABLE_ID_LEN = 64;
         constexpr static int DEFAULT_LIGHT_PIN = 6;
         constexpr static bool DEFAULT_LIGHT_STATE = false;
