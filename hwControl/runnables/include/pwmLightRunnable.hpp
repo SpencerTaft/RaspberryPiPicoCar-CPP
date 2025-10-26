@@ -19,6 +19,11 @@ class PWMLightRunnable : public LightRunnable {
         virtual RunnableType getType();
 
         virtual bool setConfig(const char* newConfig);
+
+        const char* IS_RAMP = "isRamp";
+        const char* LMAX = "LMax";
+        const char* RAMP_UP_TIME_MS = "rampUpTimeMs";
+
     protected:
         constexpr static bool DEFAULT_PWM_LIGHT_RAMP = false;
         constexpr static int DEFAULT_PWM_LIGHT_LMAX = 255;

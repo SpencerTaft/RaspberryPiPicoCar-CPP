@@ -45,12 +45,18 @@ bool LightRunnable::setConfig(const char* newConfig)
 
     nlohmann::json configJSON = nlohmann::json::parse(newConfig);
 
-    if (configJSON.is_object() && configJSON.contains("pin") && configJSON.contains("isOn"))
+    if (configJSON.is_object())
     {
-        _lightConfig.pin = configJSON["pin"];
-        _lightConfig.isOn = configJSON["isOn"];
+        if (configJSON.contains(PIN))
+        {
+            _lightConfig.pin = configJSON[PIN];
+        }
+        if (configJSON.contains(IS_ON))
+        {
+            _lightConfig.isOn = configJSON[IS_ON];
+        }
 
-        setLightOutput();
+        //setLightOutput();
         setConfigSuccess = true;
     }
     else

@@ -22,4 +22,7 @@ class Runnable
         virtual RunnableType getType() = 0;
 
         virtual bool setConfig(const char* newConfig) = 0;
+
+    protected:
+        constexpr static int MAX_RUNNABLE_ID_LEN = 64;
 };

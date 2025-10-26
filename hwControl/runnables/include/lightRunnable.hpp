@@ -18,8 +18,11 @@ class LightRunnable : public Runnable {
         virtual RunnableType getType();
 
         virtual bool setConfig(const char* newConfig);
+
+        const char* PIN = "pin";
+        const char* IS_ON = "isOn";
+
     protected:
-        constexpr static int MAX_RUNNABLE_ID_LEN = 64;
         constexpr static int DEFAULT_LIGHT_PIN = 6;
         constexpr static bool DEFAULT_LIGHT_STATE = false;
 

@@ -48,13 +48,28 @@ bool PWMLightRunnable::setConfig(const char* newConfig)
 
     nlohmann::json configJSON = nlohmann::json::parse(newConfig);
 
-    if (configJSON.is_object() && configJSON.contains("pin") && configJSON.contains("isOn")) //todo update one value at a time
+    if (configJSON.is_object())
     {
-        _lightConfig.pin = configJSON["pin"];
-        _lightConfig.isOn = configJSON["isOn"];
-        _pwmLightConfig.isRamp = configJSON["isRamp"];
-        _pwmLightConfig.LMax = configJSON["LMax"];
-        _pwmLightConfig.rampUpTimeMs = configJSON["rampUpTimeMs"];
+        if (configJSON.contains(PIN))
+        {
+            _lightConfig.pin = configJSON[PIN];
+        }
+        if (configJSON.contains(IS_ON))
+        {
+            _lightConfig.isOn = configJSON[IS_ON];
+        }
+        if (configJSON.contains(IS_RAMP))
+        {
+            _pwmLightConfig.isRamp = configJSON[IS_RAMP];
+        }
+        if (configJSON.contains(LMAX))
+        {
+            _pwmLightConfig.LMax = configJSON[LMAX];
+        }
+        if (configJSON.contains(RAMP_UP_TIME_MS))
+        {
+            _pwmLightConfig.rampUpTimeMs = configJSON[RAMP_UP_TIME_MS];
+        }
 
         //setLightOutput();//todo rem
         setConfigSuccess = true;
