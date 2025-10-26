@@ -37,7 +37,7 @@ class PWMLightRunnable : public LightRunnable {
 
     private:
         //private ramp parameters
-        int _lastRampUpdateTimeMs;
+        int _rampLastUpdateTimeMs;
         int _lastRampLevel;
         bool _isLastRampDown;
 };

@@ -18,9 +18,9 @@ PWMLightRunnable::PWMLightRunnable(char *ID) : LightRunnable(ID)
     _pwmLightConfig.rampUpTimeMs = DEFAULT_PWM_LIGHT_RAMPUPTIME_MS;
 
     //set private ramp parameters to defaults
-    _lastRampUpdateTimeMs = 0;
-    int _lastRampLevel = 0;
-    bool _isLastRampDown = false;
+    _rampLastUpdateTimeMs = 0;
+    int _rampLevel = 0;
+    bool _isRampDown = false;
 
     mutex_init(&_configMutex);
 }
@@ -102,14 +102,14 @@ void PWMLightRunnable::calculateRamp()
 {
     //todo get current time, and use absolute value of time difference
     int currentTimeMs = to_ms_since_boot(get_absolute_time());
-    int rampTimeDeltaMs = std::abs(currentTimeMs - _lastRampUpdateTimeMs);
+    int rampTimeDeltaMs = std::abs(currentTimeMs - _rampLastUpdateTimeMs);
     
-    int rampDeltaL = rampTimeDeltaMs / _pwmLightConfig.rampUpTimeMs; //percentage of ramp completed since last update
-    rampDeltaL = rampDeltaL * (_pwmLightConfig.LMax); //convert to L level change
+    int rampDeltaLevel = rampTimeDeltaMs / _pwmLightConfig.rampUpTimeMs; //percentage of ramp completed since last update
+    rampDeltaLevel = rampDeltaLevel * (_pwmLightConfig.LMax); //convert to L level change
 
     if (_isLastRampDown)
     {
-        _lastRampLevel -= rampDeltaL;
+        _lastRampLevel -= rampDeltaLevel;
         if (_lastRampLevel < 0)
         {
             _lastRampLevel = 0;
@@ -118,7 +118,7 @@ void PWMLightRunnable::calculateRamp()
     }
     else
     {
-        _lastRampLevel += rampDeltaL;
+        _lastRampLevel += rampDeltaLevel;
         if (_lastRampLevel > _pwmLightConfig.LMax)
         {
             _lastRampLevel = _pwmLightConfig.LMax;
@@ -126,7 +126,7 @@ void PWMLightRunnable::calculateRamp()
         }
     }
 
-    _lastRampUpdateTimeMs = currentTimeMs;
+    _rampLastUpdateTimeMs = currentTimeMs;
 
     setPWMLightOutput(_lastRampLevel);
 }
@@ -134,16 +134,22 @@ void PWMLightRunnable::calculateRamp()
 void PWMLightRunnable::setPWMLightOutput(int level)
 {
     //TODO first pass of copilot, manual adjustments todo
-    gpio_set_function(_lightConfig.pin, GPIO_FUNC_PWM); // Set pin to PWM function
-    uint slice_num = pwm_gpio_to_slice_num(_lightConfig.pin); // Get PWM slice for the pin
+    gpio_set_function(_lightConfig.pin, GPIO_FUNC_PWM);
+    uint slice_num = pwm_gpio_to_slice_num(_lightConfig.pin);
 
-    pwm_config config = pwm_get_default_config(); // Get default PWM config
-    pwm_config_set_clkdiv(&config, 4.0f); // Set clock divider for PWM frequency (clock speed / divider)
-    pwm_config_set_wrap(&config, 65535); // Set wrap value for 16-bit resolution (16 bit resolution)
+    pwm_config config = pwm_get_default_config();
+
+    //clock is 125MHz on Pico
+    //PWM Frequency = System Clock Frequency / (Clock Divider * Wrap Value)
+    //min time for _pwmLightConfig.rampUpTimeMs = 1ms = .001s = 1kHz min frequency
+    //try 16 for clock divider, which is ~30kHz with a wrap of 255
+    pwm_config_set_clkdiv(&config, 16.0f); //clock frequency divider, clock is 125MHz on Pico
+    pwm_config_set_wrap(&config, 255); //only 8 bit resolution for now
+    
     pwm_init(slice_num, &config, true); // Initialize PWM with the config
 
     // Scale LMax to 16-bit range (expects 0-100, then multiplies by 65535.  Need to update, since resolution is lost)
     //https://www.raspberrypi.com/documentation/pico-sdk/hardware.html#group_hardware_pwm_1ga279d1ba7dcc8f19619f389317efb41fd
-    uint16_t level = static_cast<uint16_t>((_pwmLightConfig.LMax / 100.0f) * 65535); 
-    pwm_set_gpio_level(_lightConfig.pin, level); // Set PWM level
+    uint16_t scaledLevel = static_cast<uint16_t>((level / 100.0f) * 255); 
+    pwm_set_gpio_level(_lightConfig.pin, scaledLevel); // Set PWM level
 }
