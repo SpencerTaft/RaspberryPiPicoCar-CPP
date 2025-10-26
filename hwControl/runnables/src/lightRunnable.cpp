@@ -56,7 +56,6 @@ bool LightRunnable::setConfig(const char* newConfig)
             _lightConfig.isOn = configJSON[IS_ON];
         }
 
-        //setLightOutput();
         setConfigSuccess = true;
     }
     else

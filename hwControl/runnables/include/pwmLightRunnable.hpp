@@ -4,7 +4,7 @@
 
 typedef struct PWMLightConfig {
     bool isRamp; //enables/disables ramping
-    int LMax; //max brightness level 0-255
+    int LMax; //max brightness level 0-100%
     int rampUpTimeMs; //time to ramp up in milliseconds
 } PWMLightConfig;
 
@@ -30,9 +30,16 @@ class PWMLightRunnable : public LightRunnable {
         constexpr static int DEFAULT_PWM_LIGHT_RAMPUPTIME_MS = 1000;
 
         char _runnableID[MAX_RUNNABLE_ID_LEN];
-        RunnableType _runnableType;
         PWMLightConfig _pwmLightConfig;
-        mutex_t _configMutex;
+
+        void calculateRamp();
+        void setPWMLightOutput(int level);
+
+    private:
+        //private ramp parameters
+        int _lastRampUpdateTimeMs;
+        int _lastRampLevel;
+        bool _isLastRampDown;
 };
 
 
