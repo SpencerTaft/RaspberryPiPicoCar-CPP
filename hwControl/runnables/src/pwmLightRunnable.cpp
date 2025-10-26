@@ -33,7 +33,8 @@ RunnableType PWMLightRunnable::getType()
 RuntimeExecutionStatus PWMLightRunnable::runtime()
 {
     mutex_enter_blocking(&_configMutex);
-    std::cout << "PWM LightRunnable runtime" << std::endl;
+    
+    //std::cout << "PWM LightRunnable runtime1" << std::endl;
 
     if (!_pwmLightConfig.isRamp)
     {
@@ -100,35 +101,38 @@ bool PWMLightRunnable::setConfig(const char *newConfig)
 
 void PWMLightRunnable::calculateRamp()
 {
-    //todo get current time, and use absolute value of time difference
     int currentTimeMs = to_ms_since_boot(get_absolute_time());
     int rampTimeDeltaMs = std::abs(currentTimeMs - _rampLastUpdateTimeMs);
     
-    int rampDeltaLevel = rampTimeDeltaMs / _pwmLightConfig.rampUpTimeMs; //percentage of ramp completed since last update
-    rampDeltaLevel = rampDeltaLevel * (_pwmLightConfig.LMax); //convert to L level change
+    float rampDeltaLevel = static_cast<float>(rampTimeDeltaMs) / static_cast<float>(_pwmLightConfig.rampUpTimeMs); //percentage of ramp completed since last update
+    rampDeltaLevel = rampDeltaLevel * static_cast<float>(_pwmLightConfig.LMax); //convert to L level change
 
     if (_isLastRampDown)
     {
-        _lastRampLevel -= rampDeltaLevel;
-        if (_lastRampLevel < 0)
-        {
-            _lastRampLevel = 0;
-            _isLastRampDown = false; //switch direction
-        }
+        _rampLevel -= rampDeltaLevel;
     }
     else
     {
-        _lastRampLevel += rampDeltaLevel;
-        if (_lastRampLevel > _pwmLightConfig.LMax)
-        {
-            _lastRampLevel = _pwmLightConfig.LMax;
-            _isLastRampDown = true; //switch direction
-        }
+        _rampLevel += rampDeltaLevel;
     }
+
+    if (_rampLevel < 0.0f)
+    {
+        _rampLevel = 0.0f;
+        _isLastRampDown = false; //switch direction
+    }
+    if (_rampLevel > _pwmLightConfig.LMax)
+    {
+        _rampLevel = _pwmLightConfig.LMax;
+        _isLastRampDown = true; //switch direction
+    }
+
 
     _rampLastUpdateTimeMs = currentTimeMs;
 
-    setPWMLightOutput(_lastRampLevel);
+    printf("rampLevel: %f\n", _rampLevel);
+
+    setPWMLightOutput(_rampLevel);
 }
 
 void PWMLightRunnable::setPWMLightOutput(int level)

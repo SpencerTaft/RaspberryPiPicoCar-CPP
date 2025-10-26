@@ -14,13 +14,13 @@ int main() {
 
     sleep_ms(1000); //1s
 
-    LightRunnable leftHeadlightRunnable("left headlight");
-    LightRunnable rightHeadlightRunnable("right headlight");
+    //LightRunnable leftHeadlightRunnable("left headlight");
+    //LightRunnable rightHeadlightRunnable("right headlight");
 
     PWMLightRunnable pwmLightRunnable("flashlight");
 
-    Scheduler::addRuntime(&leftHeadlightRunnable);
-    Scheduler::addRuntime(&rightHeadlightRunnable);
+    //Scheduler::addRuntime(&leftHeadlightRunnable);
+    //Scheduler::addRuntime(&rightHeadlightRunnable);
 
     Scheduler::addRuntime(&pwmLightRunnable);
     

@@ -10,9 +10,9 @@ class Scheduler
         static bool updateConfig(char* newConfig);
         static void runtimeLoop();
         
-    private:
-        constexpr static int RUNTIME_PERIOD_MS = 50000;
+        constexpr static int RUNTIME_PERIOD_MS = 50;
 
+    private:
         static int getRunnableIndex(char* runnableID);    
 
         static std::vector<Runnable*> _runnables;

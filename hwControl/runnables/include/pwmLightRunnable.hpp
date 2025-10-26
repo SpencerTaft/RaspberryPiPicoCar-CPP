@@ -26,7 +26,7 @@ class PWMLightRunnable : public LightRunnable {
 
     protected:
         constexpr static bool DEFAULT_PWM_LIGHT_RAMP = false;
-        constexpr static int DEFAULT_PWM_LIGHT_LMAX = 255;
+        constexpr static int DEFAULT_PWM_LIGHT_LMAX = 100;
         constexpr static int DEFAULT_PWM_LIGHT_RAMPUPTIME_MS = 1000;
 
         char _runnableID[MAX_RUNNABLE_ID_LEN];
@@ -38,7 +38,7 @@ class PWMLightRunnable : public LightRunnable {
     private:
         //private ramp parameters
         int _rampLastUpdateTimeMs;
-        int _lastRampLevel;
+        float _rampLevel;
         bool _isLastRampDown;
 };
 
