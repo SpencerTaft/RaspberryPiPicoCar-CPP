@@ -127,11 +127,9 @@ void PWMLightRunnable::calculateRamp()
         _isLastRampDown = true; //switch direction
     }
 
-
     _rampLastUpdateTimeMs = currentTimeMs;
 
-    printf("rampLevel: %f\n", _rampLevel);
-
+    std::cout << "RAMP LEVEL: " << _rampLevel << std::endl;
     setPWMLightOutput(_rampLevel);
 }
 
