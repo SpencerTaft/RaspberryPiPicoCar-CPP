@@ -98,7 +98,16 @@ err_t HttpServer::receiveData(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, e
             tokenIndex++;
         }
 
-        Scheduler::updateConfig(parsedConfigItem);
+        try
+        {
+            Scheduler::updateConfig(parsedConfigItem);
+        }
+        catch(const std::exception& e)
+        {
+            printf(e.what());
+        }
+        
+        
 
         //todo post-MVP, put this in its own function, with conditional response
         const char *successResponse =

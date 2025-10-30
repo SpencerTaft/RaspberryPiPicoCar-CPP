@@ -8,6 +8,8 @@ set(PICO_SDK_PATH "${CMAKE_SOURCE_DIR}/external/pico-sdk")
 # Add the Pico SDK to your project
 include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
+set(PICO_CXX_ENABLE_EXCEPTIONS 1)
+set(PICO_CXX_ENABLE_RTTI 1)
 
 project(model_car_controller)
 
@@ -24,8 +26,11 @@ add_executable(${PROJECT_NAME}
 
 target_compile_definitions(
     httpServer
-    PRIVATE PICOHTTPS_WIFI_PASSWORD=\"$ENV{PICOHTTPS_WIFI_PASSWORD}\"
+    PRIVATE 
+        PICOHTTPS_WIFI_PASSWORD=\"$ENV{PICOHTTPS_WIFI_PASSWORD}\"
 )
+
+target_compile_options(httpServer PRIVATE -fexceptions)
 
 link_directories(${CMAKE_SOURCE_DIR}/build)
 include_directories(${CMAKE_SOURCE_DIR}/hwControl/runnables/include)
