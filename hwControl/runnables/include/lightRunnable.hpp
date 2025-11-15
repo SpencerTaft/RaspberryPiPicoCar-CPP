@@ -23,8 +23,8 @@ class LightRunnable : public Runnable {
         const char* IS_ON = "isOn";
 
     protected:
-        constexpr static int DEFAULT_LIGHT_PIN = 6;
-        constexpr static bool DEFAULT_LIGHT_STATE = false;
+        constexpr static int DEFAULT_LIGHT_PIN = 15;
+        constexpr static bool DEFAULT_LIGHT_STATE = true;
 
         char _runnableID[MAX_RUNNABLE_ID_LEN];
         RunnableType _runnableType;

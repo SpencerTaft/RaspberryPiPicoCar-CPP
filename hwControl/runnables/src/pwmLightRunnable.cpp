@@ -33,8 +33,6 @@ RunnableType PWMLightRunnable::getType()
 RuntimeExecutionStatus PWMLightRunnable::runtime()
 {
     mutex_enter_blocking(&_configMutex);
-    
-    //std::cout << "PWM LightRunnable runtime1" << std::endl;
 
     if (!_pwmLightConfig.isRamp)
     {
@@ -129,7 +127,6 @@ void PWMLightRunnable::calculateRamp()
 
     _rampLastUpdateTimeMs = currentTimeMs;
 
-    std::cout << "RAMP LEVEL: " << _rampLevel << std::endl;
     setPWMLightOutput(_rampLevel);
 }
 

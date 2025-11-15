@@ -25,9 +25,9 @@ class PWMLightRunnable : public LightRunnable {
         const char* RAMP_UP_TIME_MS = "rampUpTimeMs";
 
     protected:
-        constexpr static bool DEFAULT_PWM_LIGHT_RAMP = false;
+        constexpr static bool DEFAULT_PWM_LIGHT_RAMP = true;
         constexpr static int DEFAULT_PWM_LIGHT_LMAX = 100;
-        constexpr static int DEFAULT_PWM_LIGHT_RAMPUPTIME_MS = 1000;
+        constexpr static int DEFAULT_PWM_LIGHT_RAMPUPTIME_MS = 500;
 
         char _runnableID[MAX_RUNNABLE_ID_LEN];
         PWMLightConfig _pwmLightConfig;

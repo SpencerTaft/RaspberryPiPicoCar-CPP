@@ -10,7 +10,7 @@ class Scheduler
         static bool updateConfig(char* newConfig);
         static void runtimeLoop();
         
-        constexpr static int RUNTIME_PERIOD_MS = 50;
+        constexpr static int RUNTIME_PERIOD_MS = 10;
 
     private:
         static int getRunnableIndex(char* runnableID);    
