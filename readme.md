@@ -1,11 +1,10 @@
-This is a simple README for the MVP version.
+This is a simple README for the last raspberry pi pico w version.
+Future releases will be developed for esp32 targets.
 
 Features:
 - ability to add light runtimes, which can update pin voltages
 - http server that can receive HTTP requests containing JSON updates for light runtimes
-
-Known limitations:
-- no exception handling, including JSON parsing
+- PWM lighting with ramp function for configurable flashing lights
 
 Future goals:
 - exception handling
